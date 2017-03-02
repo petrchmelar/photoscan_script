@@ -1,6 +1,27 @@
-import PhotoScan
+from PhotoScan import app
+import argparse
+
 import os
 
+# Load config using python argparse if the config file is available
+config_file_path = ""
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', help='Path to config file.')
+args = parser.parse_args()
+
+if args.config:
+    config_file_path = args.config
+else:
+    config_file_path = app.getOpenFileName("Select config file.")
+
+# check if the config file exists
+if os.path.exists(config_file_path):
+    config_file_path = args.config
+else:
+    app.messageBox("Invalid config file path: \"{}\"".format(config_file_path))
+    raise IOError("File \"{}\" does not exist".format(config_file_path))
+"""
 doc = PhotoScan.app.document
 chunk = doc.addChunk()
 
@@ -24,3 +45,4 @@ chunk.updateTransform()
 chunk.matchPhotos(accuracy=PhotoScan.HighAccuracy, preselection=PhotoScan.ReferencePreselection)
 chunk.buildPoints()
 #chunk.alignCameras()
+"""
