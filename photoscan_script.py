@@ -1,14 +1,14 @@
 from PhotoScan import app
 import argparse
 
-import os
+from configparser import ConfigParser
 
 # Load config using python argparse if the config file is available
 config_file_path = ""
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--config', help='Path to config file.')
-args = parser.parse_args()
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument('--config', help='Path to config file.')
+args = arg_parser.parse_args()
 
 if args.config:
     config_file_path = args.config
@@ -17,10 +17,21 @@ else:
 
 # check if the config file exists
 if os.path.exists(config_file_path):
-    config_file_path = args.config
+    print("Your config file path is {}".format(config_file_path))
 else:
     app.messageBox("Invalid config file path: \"{}\"".format(config_file_path))
     raise IOError("File \"{}\" does not exist".format(config_file_path))
+
+# try parse config file
+cfg_parser = ConfigParser()
+cfg_parser.read(config_file_path)
+
+# load configuration
+
+
+
+
+
 """
 doc = PhotoScan.app.document
 chunk = doc.addChunk()
