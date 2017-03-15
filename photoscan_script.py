@@ -1,6 +1,7 @@
 from PhotoScan import *
 import argparse
 import glob
+import os
 
 from configparser import ConfigParser, NoOptionError, NoSectionError
 
@@ -46,7 +47,7 @@ try:
     print("Project directory configuration successfully loaded: {}".format(project_directory))
 
     log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
-    if not os.path.exists(logs_directory):
+    if not os.path.exists(log_path):
         raise IOError("Path {} does not exist".format(log_path))
     print("Logs path configuration successfully loaded: {}".format(log_path))
 
@@ -68,6 +69,7 @@ except Exception as ex:
 # create document and chunk
 doc = Document()
 chunk = doc.addChunk()
+print("Document and chunk created.")
 
 # load photos and add them into the chunk
 images = []
@@ -81,10 +83,18 @@ for image_extension in image_extensions:
 if len(images) == 0:
     app.messageBox("No images found.")
     print("No images found in directory {}".format(photos_directory))
+
 chunk.addPhotos(images)
-print("Images added into the chunk.")
+
+# load coordinates from the log file and add them into the chunk
+print("Loading references...")
+# check extension
+if os.path.split(log_path)[1] in ['csv', 'txt']:
+    raise IOError("Log file {} has bad format. (Required csv or txt)")
+chunk.loadReference(log_path, columns='nyxz', delimiter='\t')
 
 
+doc.save(path=os.path.join(project_directory, project_name + '.psz'))
 """
 doc = PhotoScan.app.document
 chunk = doc.addChunk()
