@@ -106,6 +106,9 @@ chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
 print("Updating transformation...")
 chunk.updateTransform()
 
+print("Photos alignment...")
+chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
+
 
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
 """
