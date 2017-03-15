@@ -93,6 +93,19 @@ if os.path.split(log_path)[1] in ['csv', 'txt']:
     raise IOError("Log file {} has bad format. (Required csv or txt)")
 chunk.loadReference(log_path, columns='nyxz', delimiter='\t')
 
+# set coordinates system
+print("Setting coordinate system on EPSG::4326...")
+chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
+
+# set camera accuracy
+print("Setting camera location accuracy on {}...".format([0.05, 0.05, 0.05]))
+chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
+
+
+# update transformation
+print("Updating transformation...")
+chunk.updateTransform()
+
 
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
 """
