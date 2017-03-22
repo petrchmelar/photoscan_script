@@ -150,6 +150,58 @@ except NoSectionError:
 finally:
     print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
 
+# dense clud section
+try:
+    quality = cfg_parser.get("dense_cloud", "quality")
+    if quality == "UltraHigh":
+        dense_cloud_quality = PhotoScan.UltraQuality
+    elif quality == "High":
+        dense_cloud_quality = PhotoScan.HighQuality
+    elif quality == "Medium":
+        dense_cloud_quality = PhotoScan.MediumQuality
+    elif quality == "Low":
+        dense_cloud_quality = PhotoScan.LowQuality
+    elif quality == "Lowest":
+        dense_cloud_quality = PhotoScan.LowestQuality
+    else:
+        dense_cloud_quality = PhotoScan.MediumQuality
+        print("Wrong Dense cloud quality option. Default setting will be used (Medium).")
+except NoOptionError:
+    dense_cloud_quality = PhotoScan.MediumQuality
+    print("Dense cloud quality option doesn't found in config file. Default setting will be used (Medium).")
+except NoSectionError:
+    dense_cloud_quality = PhotoScan.MediumQuality
+    print("Dense cloud section doesn't found in config file.")
+    app.messageBox("Config file loading error. dense_cloud section is missing.")
+    raise IOError("Config file error.")
+finally:
+    print("dense could quality loaded: {}", format(str(dense_cloud_quality)))
+
+try:
+    filtering = cfg_parser.get("dense_cloud", "depth_filtering")
+    if filtering == "Disabled":
+        dense_cloud_filtering = PhotoScan.NoFiltering
+    elif filtering == "Mild":
+        dense_cloud_filtering = PhotoScan.MildFiltering
+    elif filtering == "Moderate":
+        dense_cloud_filtering = PhotoScan.ModerateFiltering
+    elif filtering == "Aggressive":
+        dense_cloud_filtering = PhotoScan.AggressiveFiltering
+    else:
+        dense_cloud_filtering = PhotoScan.NoFiltering
+        print("Wrong Dense cloud depth filtering option. Default setting will be used (Disabled).")
+except NoOptionError:
+    dense_cloud_filtering = PhotoScan.NoFiltering
+    print("Dense cloud depth filtering option doesn't found in config file. Default setting will be used (Disabled).")
+except NoSectionError:
+    dense_cloud_filtering = PhotoScan.NoFiltering
+    print("Dense cloud section doesn't found in config file.")
+    app.messageBox("Config file loading error. dense_cloud section is missing.")
+    raise IOError("Config file error.")
+finally:
+    print("dense could depth filtering loaded: {}", format(str(dense_cloud_filtering)))
+
+
 print("Configuration file successfully loaded.")
 
 # create document and chunk
@@ -197,7 +249,7 @@ chunk.matchPhotos(accuracy=photos_alignment_accuracy, preselection=photos_alignm
 chunk.alignCameras()
 
 print("Building dense cloud...")
-chunk.buildDenseCloud(quality=PhotoScan.MediumQuality)
+chunk.buildDenseCloud(quality=dense_cloud_quality, filter=dense_cloud_filtering)
 
 print("Building mesh...")
 chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
