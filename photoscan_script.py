@@ -30,44 +30,72 @@ cfg_parser.read(config_file_path)
 
 # load config file section
 # GENERAL section
+print("Loading config file...")
+project_name = cfg_parser.get('general', 'project_name')
+print("Project name configuration successfully loaded: {}".format(project_name))
 try:
-    print("Loading config file...")
-    project_name = cfg_parser.get('general', 'project_name')
-    print("Project name configuration successfully loaded: {}".format(project_name))
-
     working_directory = cfg_parser.get('general', 'working_directory')
     if not os.path.exists(working_directory):
         raise IOError("Path {} does not exist".format(working_directory))
     print("Working directory configuration successfully loaded: {}".format(working_directory))
+except NoOptionError as ex:
+    app.messageBox("working_directory option is missing in the configuration file.")
+    raise ex
+except NoSectionError as ex:
+    app.messageBox("General section is missing in the configuration file.")
+    raise ex
 
+try:
     project_directory = os.path.join(working_directory, cfg_parser.get('general', 'project_directory'))
     if not os.path.exists(project_directory):
         print("Project directory {} doesn't exist. Creating new one...". format(project_directory))
         os.mkdir(project_directory)
     print("Project directory configuration successfully loaded: {}".format(project_directory))
+except NoOptionError as ex:
+    app.messageBox("project_directory option is missing in the configuration file.")
+    raise ex
+except NoSectionError as ex:
+    app.messageBox("General section is missing in the configuration file.")
+    raise ex
 
+try:
     log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
     if not os.path.exists(log_path):
         raise IOError("Path {} does not exist".format(log_path))
     print("Logs path configuration successfully loaded: {}".format(log_path))
+except NoOptionError as ex:
+    app.messageBox("log_path option is missing in the configuration file.")
+    raise ex
+except NoSectionError as ex:
+    app.messageBox("General section is missing in the configuration file.")
+    raise ex
 
+try:
     images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
     if not os.path.exists(images_directory):
         raise IOError("Path {} does not exist".format(images_directory))
     print("Photos directory configuration successfully loaded: {}".format(images_directory))
+except NoOptionError as ex:
+    app.messageBox("images_directory option is missing in the configuration file.")
+    raise ex
+except NoSectionError as ex:
+    app.messageBox("General section is missing in the configuration file.")
+    raise ex
 
+try:
     mask_path = os.path.join(working_directory, cfg_parser.get('general', 'mask_path'))
     if not os.path.exists(mask_path):
         raise IOError("Path {} does not exist".format(mask_path))
     print("Mask path configuration successfully loaded: {}".format(mask_path))
-
-
     if not os.path.exists(images_directory):
         raise IOError("Path {} does not exist".format(images_directory))
     print("Photos directory configuration successfully loaded: {}".format(images_directory))
-
-except NoOptionError:
-    app.messageBox("Config file loading error.")
+except NoOptionError as ex:
+    app.messageBox("mask_path option is missing in the configuration file.")
+    raise ex
+except NoSectionError as ex:
+    app.messageBox("General section is missing in the configuration file.")
+    raise ex
 
 # photos alignment section
 try:
