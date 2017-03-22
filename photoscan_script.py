@@ -123,8 +123,7 @@ except NoSectionError:
         "Photos alignment section doesn't found in config file.")
     app.messageBox("Config file loading error. photos_alignment section is missing.")
     raise IOError("Config file error.")
-finally:
-    print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
+print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
 
 try:
     preselection = cfg_parser.get('photos_alignment', 'preselection')
@@ -142,13 +141,61 @@ except NoOptionError:
     print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
 
 except NoSectionError:
-    photos_alignment_accuracy = PhotoScan.MediumAccuracy
     print(
         "Photos alignment section doesn't found in config file.")
     app.messageBox("Config file loading error. photos_alignment section is missing.")
     raise IOError("Config file error.")
-finally:
-    print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
+print("Photos alignment preselection loaded: {}".format(str(photos_alignment_preselection)))
+
+try:
+    generic_preselection = cfg_parser.get('photos_alignment', 'generic_preselection')
+    if generic_preselection == "True":
+        photos_alignment_generic_preselection = True
+    elif generic_preselection == "False":
+        photos_alignment_generic_preselection = False
+    else:
+        photos_alignment_generic_preselection = True
+        print("Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
+except NoOptionError:
+    photos_alignment_generic_preselection = True
+    print("Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
+
+except NoSectionError:
+    print(
+        "Photos alignment section doesn't found in config file.")
+    app.messageBox("Config file loading error. photos_alignment section is missing.")
+    raise IOError("Config file error.")
+print("Photos alignment generic_preselection loaded: {}".format(str(photos_alignment_generic_preselection)))
+
+try:
+    photos_alignment_key_point_limit = int(cfg_parser.get('photos_alignment', 'key_point_limit'))
+except NoOptionError:
+    photos_alignment_key_point_limit = 40000
+    print("Photos alignment key_point_limit option doesn't found in config file. Default setting will be used (40000).")
+except NoSectionError:
+    print(
+        "Photos alignment section doesn't found in config file.")
+    app.messageBox("Config file loading error. photos_alignment section is missing.")
+    raise IOError("Config file error.")
+except ValueError:
+    photos_alignment_key_point_limit = 40000
+    print("Photos alignment key_point_limit bad format. Default setting will be used (40000).")
+print("Photos alignment key_point_limit loaded: {}".format(str(photos_alignment_key_point_limit)))
+
+try:
+    photos_alignment_tie_point_limit = int(cfg_parser.get('photos_alignment', 'tie_point_limit'))
+except NoOptionError:
+    photos_alignment_tie_point_limit = 4000
+    print("Photos alignment tie_point_limit option doesn't found in config file. Default setting will be used (4000).")
+except NoSectionError:
+    print(
+        "Photos alignment section doesn't found in config file.")
+    app.messageBox("Config file loading error. photos_alignment section is missing.")
+    raise IOError("Config file error.")
+except ValueError:
+    photos_alignment_tie_point_limit = 4000
+print("Photos alignment tie_point_limit loaded: {}".format(str(photos_alignment_tie_point_limit)))
+
 
 # dense clud section
 try:
@@ -245,7 +292,11 @@ print("Updating transformation...")
 chunk.updateTransform()
 
 print("Photos alignment...")
-chunk.matchPhotos(accuracy=photos_alignment_accuracy, preselection=photos_alignment_preselection)
+chunk.matchPhotos(accuracy=photos_alignment_accuracy,
+                  preselection=photos_alignment_preselection,
+                  generic_preselection=photos_alignment_generic_preselection,
+                  keypoint_limit=photos_alignment_key_point_limit,
+                  tiepoint_limit=photos_alignment_tie_point_limit)
 chunk.alignCameras()
 
 print("Building dense cloud...")
