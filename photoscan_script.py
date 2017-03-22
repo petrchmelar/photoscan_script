@@ -29,8 +29,8 @@ cfg_parser = ConfigParser()
 cfg_parser.read(config_file_path)
 
 # load config file section
+# GENERAL section
 try:
-    # GENERAL section
     print("Loading config file...")
     project_name = cfg_parser.get('general', 'project_name')
     print("Project name configuration successfully loaded: {}".format(project_name))
@@ -60,11 +60,69 @@ try:
     if not os.path.exists(mask_path):
         raise IOError("Path {} does not exist".format(mask_path))
     print("Mask path configuration successfully loaded: {}".format(mask_path))
-    print("Configuration file successfully loaded.")
 
-except Exception as ex:
+
+    if not os.path.exists(images_directory):
+        raise IOError("Path {} does not exist".format(images_directory))
+    print("Photos directory configuration successfully loaded: {}".format(images_directory))
+
+except NoOptionError:
     app.messageBox("Config file loading error.")
-    raise ex
+
+# photos alignment section
+try:
+    accuracy = cfg_parser.get('photos_alignment', 'accuracy')
+    if accuracy == "LowestAccuracy":
+        photos_alignment_accuracy = PhotoScan.LowestAccuracy
+    elif accuracy == "LowAccuracy":
+        photos_alignment_accuracy = PhotoScan.LowAccuracy
+    elif accuracy == "MediumAccuracy":
+        photos_alignment_accuracy = PhotoScan.MediumAccuracy
+    elif accuracy == "HighAccuracy":
+        photos_alignment_accuracy = PhotoScan.HighAccuracy
+    elif accuracy == "HighestAccuracy":
+        photos_alignment_accuracy = PhotoScan.HighestAccuracy
+    else:
+        photos_alignment_accuracy = PhotoScan.MediumAccuracy
+        print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
+except NoOptionError:
+    photos_alignment_accuracy = PhotoScan.MediumAccuracy
+    print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
+
+except NoSectionError:
+    photos_alignment_accuracy = PhotoScan.MediumAccuracy
+    print(
+        "Photos alignment section doesn't found in config file.")
+    app.messageBox("Config file loading error. photos_alignment section is missing.")
+    raise IOError("Config file error.")
+finally:
+    print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
+
+try:
+    preselection = cfg_parser.get('photos_alignment', 'preselection')
+    if preselection == "NoPreselection":
+        photos_alignment_preselection = PhotoScan.NoPreselection
+    elif preselection == "GenericPreselection":
+        photos_alignment_preselection = PhotoScan.GenericPreselection
+    elif preselection == "ReferencePreselection":
+        photos_alignment_preselection = PhotoScan.ReferencePreselection
+    else:
+        photos_alignment_preselection = PhotoScan.NoPreselection
+        print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
+except NoOptionError:
+    photos_alignment_preselection = PhotoScan.NoPreselection
+    print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
+
+except NoSectionError:
+    photos_alignment_accuracy = PhotoScan.MediumAccuracy
+    print(
+        "Photos alignment section doesn't found in config file.")
+    app.messageBox("Config file loading error. photos_alignment section is missing.")
+    raise IOError("Config file error.")
+finally:
+    print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
+
+print("Configuration file successfully loaded.")
 
 # create document and chunk
 doc = Document()
@@ -107,7 +165,7 @@ print("Updating transformation...")
 chunk.updateTransform()
 
 print("Photos alignment...")
-chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
+chunk.matchPhotos(accuracy=photos_alignment_accuracy, preselection=photos_alignment_preselection)
 chunk.alignCameras()
 
 print("Building dense cloud...")
@@ -121,28 +179,3 @@ chunk.buildUV(mapping=PhotoScan.GenericMapping)
 chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
 
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
-"""
-doc = PhotoScan.app.document
-chunk = doc.addChunk()
-
-working_path = "D:\\photoscan_test"
-
-# Load photos
-photo_path = working_path + "\\photos"
-photo_list = os.listdir(photo_path)
-for photo_name in photo_list:
-        chunk.addPhotos([photo_path + "\\" + photo_name])
-
-# Import coordinates of cameras
-cameralog_path = working_path + "\\logs\\log.txt"
-chunk.loadReference(cameralog_path, format='csv', columns='nyxz', delimiter='\t')
-
-chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
-chunk.accuracy_cameras = [0.05, 0.05, 0.05]
-chunk.updateTransform()
-
-# Align photos
-chunk.matchPhotos(accuracy=PhotoScan.HighAccuracy, preselection=PhotoScan.ReferencePreselection)
-chunk.buildPoints()
-#chunk.alignCameras()
-"""
