@@ -108,7 +108,7 @@ chunk.updateTransform()
 
 print("Photos alignment...")
 chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
-
+chunk.alignCameras()
 
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
 """
