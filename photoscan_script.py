@@ -71,6 +71,11 @@ doc = Document()
 chunk = doc.addChunk()
 print("Document and chunk created.")
 
+# load mask
+if len(mask_path):
+    chunk.importMasks(mask_path)
+    print("Mask imported")
+
 # load photos and add them into the chunk
 images = []
 image_extensions = ['*.jpg', '*.png', '*.raw']
@@ -101,7 +106,6 @@ chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
 print("Setting camera location accuracy on {}...".format([0.05, 0.05, 0.05]))
 chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
 
-
 # update transformation
 print("Updating transformation...")
 chunk.updateTransform()
@@ -120,7 +124,10 @@ print("Building texture...")
 chunk.buildUV(mapping=PhotoScan.GenericMapping)
 chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
 
+
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
+
+
 """
 doc = PhotoScan.app.document
 chunk = doc.addChunk()
