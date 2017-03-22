@@ -110,6 +110,9 @@ print("Photos alignment...")
 chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
 chunk.alignCameras()
 
+print("Building dense cloud...")
+chunk.buildDenseCloud(quality=PhotoScan.MediumQuality)
+
 doc.save(path=os.path.join(project_directory, project_name + '.psz'))
 """
 doc = PhotoScan.app.document
