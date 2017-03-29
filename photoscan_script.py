@@ -28,6 +28,8 @@ else:
 cfg_parser = ConfigParser()
 cfg_parser.read(config_file_path)
 
+## photoscan_cfg = PhotoScanConfig.PSConfigurator(config_file_path)
+
 # load config file section
 # GENERAL section
 print("Loading config file...")
