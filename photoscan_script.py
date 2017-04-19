@@ -68,10 +68,10 @@ chunk.updateTransform()
 
 print("Photos alignment...")
 chunk.matchPhotos(accuracy=config.photos_alignment_accuracy,
-                  preselection=photos_alignment_preselection,
-                  generic_preselection=photos_alignment_generic_preselection,
-                  keypoint_limit=photos_alignment_key_point_limit,
-                  tiepoint_limit=photos_alignment_tie_point_limit)
+                  preselection=config.photos_alignment_preselection,
+                  generic_preselection=config.photos_alignment_generic_preselection,
+                  keypoint_limit=config.photos_alignment_key_point_limit,
+                  tiepoint_limit=config.photos_alignment_tie_point_limit)
 chunk.alignCameras()
 
 print("Building dense cloud...")

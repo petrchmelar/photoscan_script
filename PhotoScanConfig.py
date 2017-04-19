@@ -78,37 +78,37 @@ class Configuration:
         try:
             accuracy = cfg_parser.get('photos_alignment', 'accuracy')
             if accuracy == "LowestAccuracy":
-                photos_alignment_accuracy = PhotoScan.LowestAccuracy
+                photos_alignment_accuracy = LowestAccuracy
             elif accuracy == "LowAccuracy":
-                photos_alignment_accuracy = PhotoScan.LowAccuracy
+                photos_alignment_accuracy = LowAccuracy
             elif accuracy == "MediumAccuracy":
-                photos_alignment_accuracy = PhotoScan.MediumAccuracy
+                photos_alignment_accuracy = MediumAccuracy
             elif accuracy == "HighAccuracy":
-                photos_alignment_accuracy = PhotoScan.HighAccuracy
+                photos_alignment_accuracy = HighAccuracy
             elif accuracy == "HighestAccuracy":
-                photos_alignment_accuracy = PhotoScan.HighestAccuracy
+                photos_alignment_accuracy = HighestAccuracy
             else:
-                photos_alignment_accuracy = PhotoScan.MediumAccuracy
+                photos_alignment_accuracy = MediumAccuracy
                 print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
         except NoOptionError:
-            photos_alignment_accuracy = PhotoScan.MediumAccuracy
+            photos_alignment_accuracy = MediumAccuracy
             print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
         print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
 
         try:
             preselection = cfg_parser.get('photos_alignment', 'preselection')
             if preselection == "NoPreselection":
-                photos_alignment_preselection = PhotoScan.NoPreselection
+                photos_alignment_preselection = NoPreselection
             elif preselection == "GenericPreselection":
-                photos_alignment_preselection = PhotoScan.GenericPreselection
+                photos_alignment_preselection = GenericPreselection
             elif preselection == "ReferencePreselection":
-                photos_alignment_preselection = PhotoScan.ReferencePreselection
+                photos_alignment_preselection = ReferencePreselection
             else:
-                photos_alignment_preselection = PhotoScan.NoPreselection
+                photos_alignment_preselection = NoPreselection
                 print(
                     "Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
         except NoOptionError:
-            photos_alignment_preselection = PhotoScan.NoPreselection
+            photos_alignment_preselection = NoPreselection
             print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
         print("Photos alignment preselection loaded: {}".format(str(photos_alignment_preselection)))
 
@@ -147,7 +147,7 @@ class Configuration:
             photos_alignment_tie_point_limit = 4000
         print("Photos alignment tie_point_limit loaded: {}".format(str(photos_alignment_tie_point_limit)))
 
-        # GENERAL section (this values  need to be loaded from the config file...)
+        # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
         self.project_directory = project_directory
@@ -172,8 +172,8 @@ class Configuration:
         self.mask_path = ""
 
         # photos alignment section
-        self.photos_alignment_accuracy = PhotoScan.MediumAccuracy
-        self.photos_alignment_preselection = PhotoScan.NoPreselection
+        self.photos_alignment_accuracy = MediumAccuracy
+        self.photos_alignment_preselection = NoPreselection
         self.photos_alignment_generic_preselection = True
         self.photos_alignment_key_point_limit = 40000
         self.photos_alignment_tie_point_limit = 4000
