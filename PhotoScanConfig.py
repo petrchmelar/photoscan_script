@@ -96,7 +96,7 @@ class Configuration:
                 photos_alignment_accuracy = HighestAccuracy
             else:
                 photos_alignment_accuracy = MediumAccuracy
-                print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
+                print("Photos alignment accuracy option bad format. Default setting will be used (MediumAccuracy).")
         except NoOptionError:
             photos_alignment_accuracy = MediumAccuracy
             print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
@@ -113,7 +113,7 @@ class Configuration:
             else:
                 photos_alignment_preselection = NoPreselection
                 print(
-                    "Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
+                    "Photos alignment preselection option bad format. Default setting will be used (NoPreselection).")
         except NoOptionError:
             photos_alignment_preselection = NoPreselection
             print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
@@ -128,7 +128,7 @@ class Configuration:
             else:
                 photos_alignment_generic_preselection = True
                 print(
-                    "Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
+                    "Photos alignment generic_preselection option bad format. Default setting will be used (True).")
         except NoOptionError:
             photos_alignment_generic_preselection = True
             print("Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
