@@ -84,7 +84,10 @@ chunk.buildDenseCloud(quality=config.dense_cloud_quality,
 
 # build mesh
 print("Building mesh...")
-chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
+chunk.buildModel(surface = config.mesh_surface,
+                 source = PhotoScan.DenseCloudData,
+                 interpolation = config.mesh_interpolation,
+                 face_count = config.mesh_face_count)
 
 print("Building texture...")
 chunk.buildUV(mapping=PhotoScan.GenericMapping)

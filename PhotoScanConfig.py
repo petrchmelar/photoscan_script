@@ -191,7 +191,7 @@ class Configuration:
         except NoOptionError:
             dense_cloud_filtering = AggressiveFiltering
             print("Dense cloud filtering option doesn't found in config file. Default setting will be used (Aggressive).")
-        print("Dense cloud quality loaded: {}".format(str(dense_cloud_filtering)))
+        print("Dense cloud depth_filtering loaded: {}".format(str(dense_cloud_filtering)))
 
         try:
             keep_depth = cfg_parser.get('dense_cloud', 'keep_depth')
@@ -206,6 +206,7 @@ class Configuration:
         except NoOptionError:
             dense_cloud_keep_depth = False
             print("Dense cloud keep_dept option doesn't found in config file. Default setting will be used (False).")
+        print("Dense cloud keep_depth loaded: {}".format(str(dense_cloud_keep_depth)))
 
         try:
             reuse_depth = cfg_parser.get('dense_cloud', 'reuse_depth')
@@ -220,6 +221,55 @@ class Configuration:
         except NoOptionError:
             dense_cloud_reuse_depth = False
             print("Dense cloud reuse_depth option doesn't found in config file. Default setting will be used (False).")
+        print("Dense cloud reuse_depth loaded: {}".format(str(dense_cloud_reuse_depth)))
+
+        # mesh section
+        try:
+            surface = cfg_parser.get('mesh', 'surface')
+            if surface == "Arbitrary":
+                mesh_surface = Arbitrary
+            elif surface == "HeightFiled":
+                mesh_surface = HeightFiled
+            else:
+                mesh_surface = Arbitrary
+                print("Mesh surface option format error. Default setting will be used (Arbitrary).")
+        except NoOptionError:
+            mesh_surface = Arbitrary
+            print("Mesh surface option doesn't found in config file. Default setting will be used (Arbitrary).")
+        print("Mesh surface loaded: {}".format(str(mesh_surface)))
+
+        try:
+            interpolation = cfg_parser.get('mesh', 'interpolation')
+            if interpolation == "DisabledInterpolation":
+                mesh_interpolation = DisabledInterpolation
+            elif interpolation == "EnabledInterpolation":
+                mesh_interpolation = EnabledInterpolation
+            elif interpolation == "Extrapolated":
+                mesh_interpolation = Extrapolated
+            else:
+                mesh_interpolation = EnabledInterpolation
+                print("Mesh interpolation option format error. Default setting will be used (EnabledInterpolation).")
+        except NoOptionError:
+            mesh_interpolation = EnabledInterpolation
+            print("Mesh interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
+        print("Mesh interpolation loaded: {}".format(str(mesh_interpolation)))
+
+
+        try:
+            face_count = cfg_parser.get('mesh', 'face_count')
+            if face_count == "LowFaceCount":
+                mesh_face_count = LowFaceCount
+            elif face_count == "MediumFaceCount":
+                mesh_face_count = MediumFaceCount
+            elif face_count == "HighFaceCount":
+                mesh_face_count = HighFaceCount
+            else:
+                mesh_face_count = MediumFaceCount
+                print("Mesh face_count option format error. Default setting will be used (MediumFaceCount).")
+        except NoOptionError:
+            mesh_face_count = EnabledInterpolation
+            print("Mesh face_count option doesn't found in config file. Default setting will be used (MediumFaceCount).")
+        print("Mesh face_count loaded: {}".format(str(mesh_face_count)))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
@@ -242,6 +292,11 @@ class Configuration:
         self.dense_cloud_keep_depth = dense_cloud_keep_depth
         self.dense_cloud_reuse_depth = dense_cloud_reuse_depth
 
+        # mesh
+        self.mesh_surface = mesh_surface
+        self.mesh_interpolation = mesh_interpolation
+        self.mesh_face_count = mesh_face_count
+
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
         self.project_name = ""
@@ -261,3 +316,10 @@ class Configuration:
         # dense cloud section
         self.dense_cloud_quality = MediumQuality
         self.dense_cloud_filtering = AggressiveFiltering
+        self.dense_cloud_keep_depth = False
+        self.dense_cloud_reuse_depth = False
+
+        # mesh
+        self.mesh_surface = Arbitrary
+        self.mesh_interpolation = EnabledInterpolation
+        self.mesh_face_count = MediumFaceCount
