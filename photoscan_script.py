@@ -66,6 +66,7 @@ chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
 print("Updating transformation...")
 chunk.updateTransform()
 
+# photos alignment
 print("Photos alignment...")
 chunk.matchPhotos(accuracy=config.photos_alignment_accuracy,
                   preselection=config.photos_alignment_preselection,
@@ -74,9 +75,14 @@ chunk.matchPhotos(accuracy=config.photos_alignment_accuracy,
                   tiepoint_limit=config.photos_alignment_tie_point_limit)
 chunk.alignCameras()
 
+# build dense cloud
 print("Building dense cloud...")
-chunk.buildDenseCloud(quality=dense_cloud_quality, filter=dense_cloud_filtering)
+chunk.buildDenseCloud(quality=config.dense_cloud_quality,
+                      filter=config.dense_cloud_filtering,
+                      keep_depth = config.dense_cloud_keep_depth,
+                      reuse_depth = config.dense_cloud_reuse_depth)
 
+# build mesh
 print("Building mesh...")
 chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
 
