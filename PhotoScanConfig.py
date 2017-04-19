@@ -31,6 +31,11 @@ class Configuration:
         self.dense_cloud_keep_depth = None
         self.dense_cloud_reuse_depth = None
 
+        # texture section (this configurations are optional)
+        # default values could be set by calling LoadDefaultConfig method
+        self.texture_count = None
+        self.texture_mapping = None
+
         self.LoadDefaultConfig()
         # load config file if path is available
         if config_file_path is not None:
@@ -271,6 +276,36 @@ class Configuration:
             print("Mesh face_count option doesn't found in config file. Default setting will be used (MediumFaceCount).")
         print("Mesh face_count loaded: {}".format(str(mesh_face_count)))
 
+        # texture section
+        try:
+            mapping = cfg_parser.get('texture', 'mapping')
+            if mapping == "GenericMapping":
+                texture_mapping = GenericMapping
+            elif mapping == "OrthophotoMapping":
+                texture_mapping = OrthophotoMapping
+            elif mapping == "AdaptiveOrthophotoMapping":
+                texture_mapping = AdaptiveOrthophotoMapping
+            elif mapping == "SphericalMapping":
+                texture_mapping = SphericalMapping
+            elif mapping == "CameraMapping":
+                texture_mapping = CameraMapping
+            else:
+                texture_mapping = GenericMapping
+                print("Texture mapping option format error. Default setting will be used (GenericMapping).")
+        except NoOptionError:
+            mesh_face_count = EnabledInterpolation
+            print("Texture mapping option doesn't found in config file. Default setting will be used (GenericMapping).")
+        print("Texture mapping loaded: {}".format(str(GenericMapping)))
+
+        try:
+            texture_count = int(cfg_parser.get('texture', 'count'))
+        except NoOptionError:
+            texture_count = 1
+            print("texture count option doesn't found in config file. Default setting will be used (4000).")
+        except ValueError:
+            texture_count = 1
+        print("Photos alignment tie_point_limit loaded: {}".format(str(texture_count)))
+
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -296,6 +331,10 @@ class Configuration:
         self.mesh_surface = mesh_surface
         self.mesh_interpolation = mesh_interpolation
         self.mesh_face_count = mesh_face_count
+
+        # texture
+        self.texture_mapping = texture_mapping
+        self.texture_count = texture_count
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)

@@ -89,8 +89,10 @@ chunk.buildModel(surface = config.mesh_surface,
                  interpolation = config.mesh_interpolation,
                  face_count = config.mesh_face_count)
 
+# build texture
 print("Building texture...")
-chunk.buildUV(mapping=PhotoScan.GenericMapping)
+chunk.buildUV(mapping=config.texture_mapping,
+              count=config.texture_count)
 chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
 
-doc.save(path=os.path.join(project_directory, project_name + '.psz'))
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psz'))
