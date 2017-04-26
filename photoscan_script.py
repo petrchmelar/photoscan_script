@@ -77,15 +77,6 @@ chunk.matchPhotos(accuracy=config.photos_alignment_accuracy,
                   keypoint_limit=config.photos_alignment_key_point_limit,
                   tiepoint_limit=config.photos_alignment_tie_point_limit)
 chunk.alignCameras()
-print("Building mesh...")
-chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
-
-print("Building texture...")
-chunk.buildUV(mapping=PhotoScan.GenericMapping)
-chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
-
-if not doc.save(os.path.join(project_directory, project_name + ".psz")):
-    PhotoScan.app.messageBox("Can't save project")
 
 # build dense cloud
 print("Building dense cloud...")
@@ -110,9 +101,13 @@ chunk.buildTexture(blending=config.texture_blending,
                    size=config.texture_size,
                    fill_holes=config.texture_fill_holes)
 
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
+doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
+chunk = dock.chunk
+
+
 # build dem
-chunk.buldDem(source=config.dem_source,
+chunk.buildDem(source=config.dem_source,
               interpolation=config.dem_interpolation)
 
 
-doc.save(path=os.path.join(config.project_directory, config.project_name + '.psz'))
