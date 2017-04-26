@@ -3,7 +3,7 @@ import argparse
 import glob
 import os
 
-from configparser import ConfigParser, NoOptionError, NoSectionError
+from PhotoScanConfig import Configuration
 
 # Load config using python argparse if the config file is available
 config_file_path = ""
@@ -24,74 +24,38 @@ else:
     app.messageBox("Invalid config file path: \"{}\"".format(config_file_path))
     print("Invalid config file path: \"{}\"".format(config_file_path))
 
-# try parse config file
-cfg_parser = ConfigParser()
-cfg_parser.read(config_file_path)
-
-# load config file section
-try:
-    # GENERAL section
-    print("Loading config file...")
-    project_name = cfg_parser.get('general', 'project_name')
-    print("Project name configuration successfully loaded: {}".format(project_name))
-
-    working_directory = cfg_parser.get('general', 'working_directory')
-    if not os.path.exists(working_directory):
-        raise IOError("Path {} does not exist".format(working_directory))
-    print("Working directory configuration successfully loaded: {}".format(working_directory))
-
-    project_directory = os.path.join(working_directory, cfg_parser.get('general', 'project_directory'))
-    if not os.path.exists(project_directory):
-        print("Project directory {} doesn't exist. Creating new one...". format(project_directory))
-        os.mkdir(project_directory)
-    print("Project directory configuration successfully loaded: {}".format(project_directory))
-
-    log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
-    if not os.path.exists(log_path):
-        raise IOError("Path {} does not exist".format(log_path))
-    print("Logs path configuration successfully loaded: {}".format(log_path))
-
-    images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
-    if not os.path.exists(images_directory):
-        raise IOError("Path {} does not exist".format(images_directory))
-    print("Photos directory configuration successfully loaded: {}".format(images_directory))
-
-    mask_path = os.path.join(working_directory, cfg_parser.get('general', 'mask_path'))
-    if not os.path.exists(mask_path):
-        raise IOError("Path {} does not exist".format(mask_path))
-    print("Mask path configuration successfully loaded: {}".format(mask_path))
-    print("Configuration file successfully loaded.")
-
-except Exception as ex:
-    app.messageBox("Config file loading error.")
-    raise ex
+config = Configuration(config_file_path=config_file_path)
 
 # create document and chunk
 doc = Document()
 chunk = doc.addChunk()
 print("Document and chunk created.")
 
+# mask
+chunk.importMasks(config.mask_path)
+print("Mask imported.")
+
 # load photos and add them into the chunk
 images = []
 image_extensions = ['*.jpg', '*.png', '*.raw']
 print("Loading images...")
 for image_extension in image_extensions:
-    for filename in glob.glob(os.path.join(images_directory, image_extension)):
+    for filename in glob.glob(os.path.join(config.images_directory, image_extension)):
         images.append(filename)
         print("Image {} loaded.".format(filename))
 
 if len(images) == 0:
     app.messageBox("No images found.")
-    print("No images found in directory {}".format(photos_directory))
+    print("No images found in directory {}".format(config.photos_directory))
 
 chunk.addPhotos(images)
 
 # load coordinates from the log file and add them into the chunk
 print("Loading references...")
 # check extension
-if os.path.split(log_path)[1] in ['csv', 'txt']:
+if os.path.split(config.log_path)[1] in ['csv', 'txt']:
     raise IOError("Log file {} has bad format. (Required csv or txt)")
-chunk.loadReference(log_path, columns='nyxz', delimiter='\t')
+chunk.loadReference(config.log_path, columns='nyxz', delimiter='\t')
 
 # set coordinates system
 print("Setting coordinate system on EPSG::4326...")
@@ -101,18 +65,18 @@ chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
 print("Setting camera location accuracy on {}...".format([0.05, 0.05, 0.05]))
 chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
 
-
 # update transformation
 print("Updating transformation...")
 chunk.updateTransform()
 
+# photos alignment
 print("Photos alignment...")
-chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
+chunk.matchPhotos(accuracy=config.photos_alignment_accuracy,
+                  preselection=config.photos_alignment_preselection,
+                  generic_preselection=config.photos_alignment_generic_preselection,
+                  keypoint_limit=config.photos_alignment_key_point_limit,
+                  tiepoint_limit=config.photos_alignment_tie_point_limit)
 chunk.alignCameras()
-
-print("Building dense cloud...")
-chunk.buildDenseCloud(quality=PhotoScan.MediumQuality)
-
 print("Building mesh...")
 chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
 
@@ -123,28 +87,32 @@ chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
 if not doc.save(os.path.join(project_directory, project_name + ".psz")):
     PhotoScan.app.messageBox("Can't save project")
 
-"""
-doc = PhotoScan.app.document
-chunk = doc.addChunk()
+# build dense cloud
+print("Building dense cloud...")
+chunk.buildDenseCloud(quality=config.dense_cloud_quality,
+                      filter=config.dense_cloud_filtering,
+                      keep_depth = config.dense_cloud_keep_depth,
+                      reuse_depth = config.dense_cloud_reuse_depth)
 
-working_path = "D:\\photoscan_test"
+# build mesh
+print("Building mesh...")
+chunk.buildModel(surface = config.mesh_surface,
+                 source = PhotoScan.DenseCloudData,
+                 interpolation = config.mesh_interpolation,
+                 face_count = config.mesh_face_count)
 
-# Load photos
-photo_path = working_path + "\\photos"
-photo_list = os.listdir(photo_path)
-for photo_name in photo_list:
-        chunk.addPhotos([photo_path + "\\" + photo_name])
+# build texture
+print("Building texture...")
+chunk.buildUV(mapping=config.texture_mapping,
+              count=config.texture_count)
+chunk.buildTexture(blending=config.texture_blending,
+                   color_correction=config.texture_color_correction,
+                   size=config.texture_size,
+                   fill_holes=config.texture_fill_holes)
 
-# Import coordinates of cameras
-cameralog_path = working_path + "\\logs\\log.txt"
-chunk.loadReference(cameralog_path, format='csv', columns='nyxz', delimiter='\t')
+# build dem
+chunk.buldDem(source=config.dem_source,
+              interpolation=config.dem_interpolation)
 
-chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
-chunk.accuracy_cameras = [0.05, 0.05, 0.05]
-chunk.updateTransform()
 
-# Align photos
-chunk.matchPhotos(accuracy=PhotoScan.HighAccuracy, preselection=PhotoScan.ReferencePreselection)
-chunk.buildPoints()
-#chunk.alignCameras()
-"""
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psz'))
