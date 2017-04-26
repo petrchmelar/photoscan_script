@@ -108,9 +108,21 @@ chunk.updateTransform()
 
 print("Photos alignment...")
 chunk.matchPhotos(accuracy=PhotoScan.LowestAccuracy, preselection=PhotoScan.ReferencePreselection)
+chunk.alignCameras()
 
+print("Building dense cloud...")
+chunk.buildDenseCloud(quality=PhotoScan.MediumQuality)
 
-doc.save(path=os.path.join(project_directory, project_name + '.psz'))
+print("Building mesh...")
+chunk.buildModel(surface = PhotoScan.Arbitrary, source = PhotoScan.DenseCloudData, interpolation = PhotoScan.DisabledInterpolation, face_count = PhotoScan.MediumFaceCount)
+
+print("Building texture...")
+chunk.buildUV(mapping=PhotoScan.GenericMapping)
+chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
+
+if not doc.save(os.path.join(project_directory, project_name + ".psz")):
+    PhotoScan.app.messageBox("Can't save project")
+
 """
 doc = PhotoScan.app.document
 chunk = doc.addChunk()
