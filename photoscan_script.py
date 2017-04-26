@@ -31,10 +31,12 @@ doc = Document()
 chunk = doc.addChunk()
 print("Document and chunk created.")
 
+"""
 # load mask
 if len(mask_path):
     chunk.importMasks(mask_path)
     print("Mask imported")
+"""
 
 # load photos and add them into the chunk
 images = []
@@ -97,6 +99,14 @@ chunk.buildModel(surface = config.mesh_surface,
 print("Building texture...")
 chunk.buildUV(mapping=config.texture_mapping,
               count=config.texture_count)
-chunk.buildTexture(blending = PhotoScan.MosaicBlending, size = 4096)
+chunk.buildTexture(blending=config.texture_blending,
+                   color_correction=config.texture_color_correction,
+                   size=config.texture_size,
+                   fill_holes=config.texture_fill_holes)
+
+# build dem
+chunk.buldDem(source=config.dem_source,
+              interpolation=config.dem_interpolation)
+
 
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psz'))

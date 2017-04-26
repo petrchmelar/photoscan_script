@@ -36,6 +36,18 @@ class Configuration:
         self.texture_count = None
         self.texture_mapping = None
 
+        # build texture section (this configurations are optional)
+        # default values could be set by calling LoadDefaultConfig method
+        self.texture_blending = None
+        self.texture_color_correction = None
+        self.texture_size = None
+        self.texture_fill_holes = None
+
+        # dem section (this configurations are optional)
+        # default values could be set by calling LoadDefaultConfig method
+        self.dem_source = None
+        self.dem_interpolation = None
+
         self.LoadDefaultConfig()
         # load config file if path is available
         if config_file_path is not None:
@@ -306,6 +318,110 @@ class Configuration:
             texture_count = 1
         print("Photos alignment tie_point_limit loaded: {}".format(str(texture_count)))
 
+        # build texture section
+        try:
+            blending = cfg_parser.get('build_texture', 'blending')
+            if blending == "AverageBlending":
+                texture_blending = AverageBlending
+            elif blending == "MosaicBlending":
+                texture_blending = MosaicBlending
+            elif blending == "MinBlending":
+                texture_blending = MinBlending
+            elif blending == "MaxBlending":
+                texture_blending = MaxBlending
+            elif blending == "DisabledBlending":
+                texture_blending = DisabledBlending
+            else:
+                texture_blending = MosaicBlending
+                print("Texture blending option format error. Default setting will be used (MosaicBlending).")
+        except NoOptionError:
+            texture_blending = MosaicBlending
+            print("Texture blending option doesn't found in config file. Default setting will be used (MosaicBlending).")
+        print("Texture blending loaded: {}".format(str(texture_blending)))
+
+        try:
+            color_correction = cfg_parser.get('build_texture', 'color_correction')
+            if color_correction == "True":
+                texture_color_correction = True
+            elif color_correction == "False":
+                texture_color_correction = False
+            else:
+                texture_color_correction = False
+                print(
+                    "Dense cloud color_correction option bad format. Default setting will be used (False).")
+        except NoOptionError:
+            texture_color_correction = False
+            print("Dense cloud color_correction option doesn't found in config file. Default setting will be used (False).")
+        print("Dense cloud color_correction loaded: {}".format(str(texture_color_correction)))
+
+        try:
+            texture_size = int(cfg_parser.get('build_texture', 'size'))
+        except NoOptionError:
+            texture_size = 2048
+            print("texture count option doesn't found in config file. Default setting will be used (4000).")
+        except ValueError:
+            texture_size = 2048
+        print("Photos alignment tie_point_limit loaded: {}".format(str(texture_size)))
+
+        try:
+            fill_holes = cfg_parser.get('build_texture', 'fill_holes')
+            if fill_holes == "True":
+                texture_fill_holes = True
+            elif fill_holes == "False":
+                texture_fill_holes = False
+            else:
+                texture_fill_holes = True
+                print(
+                    "Dense cloud fill_holes option bad format. Default setting will be used (True).")
+        except NoOptionError:
+            texture_fill_holes = True
+            print("Dense cloud fill_holes option doesn't found in config file. Default setting will be used (True).")
+        print("Dense cloud fill_holes loaded: {}".format(str(texture_fill_holes)))
+
+        # build dem section
+        try:
+            source = cfg_parser.get('dem', 'source')
+            if source == "PointCloudData":
+                dem_source = PointCloudData
+            elif source == "DenseCloudData":
+                dem_source = DenseCloudData
+            elif source == "DepthMapsData":
+                dem_source = DepthMapsData
+            elif source == "ModelData":
+                dem_source = ModelData
+            elif source == "TiledModelData":
+                dem_source = TiledModelData
+            elif source == "ElevationData":
+                dem_source = ElevationData
+            elif source == "OrthomosaicData":
+                dem_source = OrthomosaicData
+            else:
+                dem_source = DenseCloudData
+                print("dem source option format error. Default setting will be used (DenseCloudData).")
+        except NoOptionError:
+            dem_source = DenseCloudData
+            print(
+                "dem source option doesn't found in config file. Default setting will be used (DenseCloudData).")
+        print("DEM source loaded: {}".format(str(dem_source)))
+
+        try:
+            interpolation = cfg_parser.get('dem', 'interpolation')
+            if interpolation == "DisabledInterpolation":
+                dem_interpolation = DisabledInterpolation
+            elif interpolation == "EnabledInterpolation":
+                dem_interpolation = EnabledInterpolation
+            elif interpolation == "Extrapolated":
+                dem_interpolation = Extrapolated
+            else:
+                dem_interpolation = EnabledInterpolation
+                print("DEM interpolation option format error. Default setting will be used (EnabledInterpolation).")
+        except NoOptionError:
+            dem_interpolation = EnabledInterpolation
+            print(
+                "DEM interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
+        print("DEM interpolation loaded: {}".format(str(dem_interpolation)))
+
+
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -336,6 +452,16 @@ class Configuration:
         self.texture_mapping = texture_mapping
         self.texture_count = texture_count
 
+        # build texture
+        self.texture_blending = texture_blending
+        self.texture_color_correction = texture_color_correction
+        self.texture_size = texture_size
+        self.texture_fill_holes = texture_fill_holes
+
+        # dem
+        self.dem_source = dem_source
+        self.dem_interpolation = dem_interpolation
+
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
         self.project_name = ""
@@ -362,3 +488,17 @@ class Configuration:
         self.mesh_surface = Arbitrary
         self.mesh_interpolation = EnabledInterpolation
         self.mesh_face_count = MediumFaceCount
+
+        # texture
+        self.texture_mapping = GenericMapping
+        self.texture_count = 1
+
+        # build texture
+        self.texture_blending = MosaicBlending
+        self.texture_color_correction = False
+        self.texture_size = 2048
+        self.texture_fill_holes = True
+
+        # dem
+        self.dem_source = DenseCloudData
+        self.dem_interpolation = EnabledInterpolation
