@@ -31,6 +31,11 @@ doc = Document()
 chunk = doc.addChunk()
 print("Document and chunk created.")
 
+# load mask
+if len(mask_path):
+    chunk.importMasks(mask_path)
+    print("Mask imported")
+
 # load photos and add them into the chunk
 images = []
 image_extensions = ['*.jpg', '*.png', '*.raw']
@@ -60,7 +65,6 @@ chunk.crs = PhotoScan.CoordinateSystem("EPSG::4326")
 # set camera accuracy
 print("Setting camera location accuracy on {}...".format([0.05, 0.05, 0.05]))
 chunk.camera_location_accuracy = PhotoScan.Vector((0.05, 0.05, 0.05))
-
 
 # update transformation
 print("Updating transformation...")
