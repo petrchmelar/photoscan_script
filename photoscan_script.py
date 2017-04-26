@@ -31,12 +31,9 @@ doc = Document()
 chunk = doc.addChunk()
 print("Document and chunk created.")
 
-"""
-# load mask
-if len(mask_path):
-    chunk.importMasks(mask_path)
-    print("Mask imported")
-"""
+# mask
+chunk.importMasks(config.mask_path)
+print("Mask imported.")
 
 # load photos and add them into the chunk
 images = []
