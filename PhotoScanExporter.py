@@ -55,6 +55,11 @@ class PhotoScanExporter:
 			print("Export report directory {} doesn't exist. Creating new one...".format(export_report_directory))
 			os.mkdir(export_report_directory)
 
+		export_shapes_directory = os.path.join(config.exports_directory, "Shapes")
+		if not os.path.exists(export_shapes_directory):
+			print("Export shapes directory {} doesn't exist. Creating new one...".format(export_shapes_directory))
+			os.mkdir(export_shapes_directory)
+
 		self.export_cameras_directory = export_cameras_directory
 		self.export_dem_directory = export_dem_directory
 		self.export_markers_directory = export_markers_directory
@@ -64,6 +69,7 @@ class PhotoScanExporter:
 		self.export_orthophotos_directory = export_orthophotos_directory
 		self.export_points_directory = export_points_directory
 		self.export_report_directory = export_report_directory
+		self.export_shapes_directory = export_shapes_directory
 	
 	def exportAll(self):
 		# export cameras
@@ -137,3 +143,6 @@ class PhotoScanExporter:
 		# export report
 		chunk.exportReport(path=self.export_report_directory)
 
+		#export shapes
+		chunk.exportShapes(path=self.export_shapes_directory, 
+						   items=self.config.export_shapes_items)

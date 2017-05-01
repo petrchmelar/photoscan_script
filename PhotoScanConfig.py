@@ -863,6 +863,25 @@ class Configuration:
             print("Points export colors (points_export_colors) option doesn't found in config file. Default setting will be used (True).")
         print("Points export colors loaded: {}".format(str(points_export_colors)))
 
+        # shapes export
+        try:
+            shapes_items = cfg_parser.get('export', 'shapes_items')
+            if shapes_items == "Point":
+                export_shapes_items = Shape.Point
+            elif shapes_items == "Polyline":
+                export_shapes_items = Shape.Polyline
+            elif shapes_items == "Polygon":
+                export_shapes_items = Shape.Polygon
+            else:
+                export_shapes_items = Shape.Polygon
+                print("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
+        except NoOptionError:
+            export_shapes_items = Shape.Polygon
+            print(
+                "Shape items (shapes_items) export option doesn't found in config file. Default setting will be used (Polygon).")
+        print("Shape items loaded: {}".format(str(export_shapes_items)))
+
+
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -953,6 +972,9 @@ class Configuration:
         self.points_export_precision = points_export_precision
         self.points_export_normals = points_export_normals
         self.points_export_colors = points_export_colors
+
+        # shape items
+        self.export_shapes_items = export_shapes_items
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
