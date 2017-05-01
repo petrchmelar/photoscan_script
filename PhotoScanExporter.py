@@ -25,10 +25,16 @@ class PhotoScanExporter:
 			print("Export markers directory {} doesn't exist. Creating new one...".format(export_markers_directory))
 			os.mkdir(export_markers_directory)
 
+		export_matches_directory = os.path.join(config.exports_directory, "Matches")
+		if not os.path.exists(export_matches_directory):
+			print("Export matches directory {} doesn't exist. Creating new one...".format(export_matches_directory))
+			os.mkdir(export_matches_directory)
+
 		self.export_cameras_directory = export_cameras_directory
 		self.export_dem_directory = export_dem_directory
 		self.export_markers_directory = export_markers_directory
-
+		self.export_matches_directory = export_matches_directory
+	
 	def exportAll(self):
 		# export cameras
 		chunk.exportCameras(path=self.export_cameras_directory, 
@@ -46,3 +52,11 @@ class PhotoScanExporter:
 
 		# export markers
 		chunk.exportMarkers(path=self.export_markers_directory)
+
+		# export matches
+		chunk.exportMatches(path=self.export_matches_directory, 
+							format=self.config.matches_export_format, 
+							precision=self.config.matches_export_precision, 
+							export_points=True, 
+							export_markers=False,
+							use_labels=False)

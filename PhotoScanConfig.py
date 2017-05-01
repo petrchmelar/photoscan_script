@@ -501,10 +501,32 @@ class Configuration:
             raster_export_transform = RasterTransformNone
             print(
                 "Raster transformation export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
-        print("aster transformation export order loaded: {}".format(str(raster_export_transform)))
+        print("Raster transformation export order loaded: {}".format(str(raster_export_transform)))
 
         # export dem no data 
         no_export_data = int(cfg_parser.get('export', 'no_data'))
+        print("Raster no data option loaded: {}".format(str(no_export_data)))
+
+        # export matches format
+        try:
+            matches_format = cfg_parser.get('export', 'matches_format')
+            if matches_format == "MatchesFormatBINGO":
+                matches_export_format = MatchesFormatBINGO
+            elif matches_format == "MatchesFormatORIMA":
+                matches_export_format = MatchesFormatORIMA
+            elif matches_format == "MatchesFormatPATB":
+                matches_export_format = MatchesFormatPATB
+            else:
+                matches_export_format = MatchesFormatBINGO
+                print("Matches export format option format error. Default setting will be used (MatchesFormatBINGO).")
+        except NoOptionError:
+            matches_export_format = MatchesFormatBINGO
+            print(
+                "Matches export format option doesn't found in config file. Default setting will be used (MatchesFormatBINGO).")
+        print("Matches export format loaded: {}".format(str(matches_export_format)))
+
+        matches_export_precision = int(cfg_parser.get('export', 'matches_precision'))
+        print("Matches export precision loaded: {}".format(str(matches_export_precision)))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
@@ -553,6 +575,9 @@ class Configuration:
         # dem export 
         self.raster_export_transform = raster_export_transform
         self.no_export_data = no_export_data
+        # matches export
+        self.matches_export_format = matches_export_format
+        self.matches_export_precision = matches_export_precision 
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
