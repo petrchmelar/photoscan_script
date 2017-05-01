@@ -676,7 +676,7 @@ class Configuration:
 
         # export orthomosaic raster transformation 
         try:
-            transform_orthomosaic = cfg_parser.get('export', 'raster_transform_orthomosaic')
+            transform_orthomosaic = cfg_parser.get('export', 'export_raster_transform')
             if transform_orthomosaic == "RasterTransformNone":
                 raster_export_orthomosaic_transform = RasterTransformNone
             elif transform_orthomosaic == "RasterTransformValue":
@@ -685,15 +685,15 @@ class Configuration:
                 raster_export_orthomosaic_transform = RasterTransformPalette
             else:
                 raster_export_orthomosaic_transform = RasterTransformNone
-                print("Raster transformation of orthomosaic export option format error. Default setting will be used (RasterTransformNone).")
+                print("Raster transformation of orthomosaic and orthoPhoto export option format error. Default setting will be used (RasterTransformNone).")
         except NoOptionError:
             raster_export_orthomosaic_transform = RasterTransformNone
             print(
-                "Raster transformation of orthomosaic export option doesn't found in config file. Default setting will be used (RasterTransformNone).")
-        print("Raster transformation of orthomosaic export loaded: {}".format(str(raster_export_orthomosaic_transform)))
+                "Raster transformation of orthomosaic and orthoPhoto export option doesn't found in config file. Default setting will be used (RasterTransformNone).")
+        print("Raster transformation of orthomosaic and orthoPhoto export loaded: {}".format(str(raster_export_orthomosaic_transform)))
 
         try:
-            orthomosaic_write_kml = cfg_parser.get('export', 'orthomosaic_write_kml')
+            orthomosaic_write_kml = cfg_parser.get('export', 'export_write_kml')
             if orthomosaic_write_kml == "True":
                 orthomosaic_export_write_kml = True
             elif orthomosaic_write_kml == "False":
@@ -701,14 +701,14 @@ class Configuration:
             else:
                 orthomosaic_export_write_kml = False
                 print(
-                    "Orthomosaic export write kml option format error. Default setting will be used (False).")
+                    "Orthomosaic and orthoPhoto export write kml option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_kml = True
-            print("Orthomosaic export write kml (orthomosaic_write_kml) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic export write kml loaded: {}".format(str(orthomosaic_export_write_kml)))
+            print("Orthomosaic and orthoPhoto export write kml (export_write_kml) option doesn't found in config file. Default setting will be used (False).")
+        print("Orthomosaic and orthoPhoto export write kml loaded: {}".format(str(orthomosaic_export_write_kml)))
 
         try:
-            write_world = cfg_parser.get('export', 'orthomosaic_write_world')
+            write_world = cfg_parser.get('export', 'export_write_world')
             if write_world == "True":
                 orthomosaic_export_write_world = True
             elif write_world == "False":
@@ -716,14 +716,14 @@ class Configuration:
             else:
                 orthomosaic_export_write_world = False
                 print(
-                    "Orthomosaic export write world format error. Default setting will be used (False).")
+                    "Orthomosaic and orthoPhoto export write world format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_world = True
-            print("Orthomosaic export write world (orthomosaic_write_world) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic export write world loaded: {}".format(str(orthomosaic_export_write_world)))
+            print("Orthomosaic and orthoPhoto export write world (export_write_world) option doesn't found in config file. Default setting will be used (False).")
+        print("Orthomosaic and orthoPhoto export write world loaded: {}".format(str(orthomosaic_export_write_world)))
 
         try:
-            write_scheme = cfg_parser.get('export', 'orthomosaic_write_scheme')
+            write_scheme = cfg_parser.get('export', 'export_write_scheme')
             if write_scheme == "True":
                 orthomosaic_export_write_scheme = True
             elif write_scheme == "False":
@@ -731,14 +731,14 @@ class Configuration:
             else:
                 orthomosaic_export_write_scheme = False
                 print(
-                    "Orthomosaic export write scheme option format error. Default setting will be used (False).")
+                    "Orthomosaic and orthoPhoto export write scheme option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_scheme = False
-            print("Orthomosaic export write scheme (orthomosaic_write_scheme) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic export write scheme loaded: {}".format(str(orthomosaic_export_write_scheme)))
+            print("Orthomosaic and orthoPhoto export write scheme (export_write_scheme) option doesn't found in config file. Default setting will be used (False).")
+        print("Orthomosaic and orthoPhoto export write scheme loaded: {}".format(str(orthomosaic_export_write_scheme)))
 
         try:
-            write_alpha = cfg_parser.get('export', 'orthomosaic_write_alpha')
+            write_alpha = cfg_parser.get('export', 'export_write_alpha')
             if write_alpha == "True":
                 orthomosaic_export_write_alpha = True
             elif write_alpha == "False":
@@ -746,14 +746,14 @@ class Configuration:
             else:
                 orthomosaic_export_write_alpha = True
                 print(
-                    "Orthomosaic export write scheme option format error. Default setting will be used (True).")
+                    "Orthomosaic and orthoPhoto export write alpha option format error. Default setting will be used (True).")
         except NoOptionError:
             orthomosaic_export_write_alpha = True
-            print("Orthomosaic export write scheme (orthomosaic_write_alpha) option doesn't found in config file. Default setting will be used (True).")
-        print("Orthomosaic export write scheme loaded: {}".format(str(orthomosaic_export_write_alpha)))
+            print("Orthomosaic and orthoPhoto export write alpha (export_write_alpha) option doesn't found in config file. Default setting will be used (True).")
+        print("Orthomosaic and orthoPhoto export write alpha loaded: {}".format(str(orthomosaic_export_write_alpha)))
 
         try:
-            tiff_compression = cfg_parser.get('export', 'orthomosaic_tiff_compression')
+            tiff_compression = cfg_parser.get('export', 'export_tiff_compression')
             if tiff_compression == "TiffCompressionNone":
                 orthomosaic_export_tiff_compression = TiffCompressionNone
             elif tiff_compression == "TiffCompressionLZW":
@@ -766,15 +766,15 @@ class Configuration:
                 orthomosaic_export_tiff_compression = TiffCompressionDeflate
             else:
                 orthomosaic_export_tiff_compression = TiffCompressionLZW
-                print("Orthomosaic tiff compression option format error. Default setting will be used (TiffCompressionLZW).")
+                print("Orthomosaic and orthoPhoto tiff compression option format error. Default setting will be used (TiffCompressionLZW).")
         except NoOptionError:
             orthomosaic_export_tiff_compression = TiffCompressionLZW
             print(
-                "Orthomosaic tiff compression (orthomosaic_tiff_compression) option doesn't found in config file. Default setting will be used (TiffCompressionLZW).")
-        print("Orthomosaic tiff compression loaded: {}".format(str(orthomosaic_export_tiff_compression)))
+                "Orthomosaic and orthoPhoto tiff compression (orthomosaic_tiff_compression) option doesn't found in config file. Default setting will be used (TiffCompressionLZW).")
+        print("Orthomosaic and orthoPhoto tiff compression loaded: {}".format(str(orthomosaic_export_tiff_compression)))
 
         try:
-            tiff_big = cfg_parser.get('export', 'orthomosaic_tiff_big')
+            tiff_big = cfg_parser.get('export', 'export_tiff_big')
             if tiff_big == "True":
                 orthomosaic_export_tiff_big = True
             elif tiff_big == "False":
@@ -782,21 +782,21 @@ class Configuration:
             else:
                 orthomosaic_export_tiff_big = False
                 print(
-                    "Orthomosaic export tiff big option format error. Default setting will be used (False).")
+                    "Orthomosaic and orthoPhoto export tiff big option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_tiff_big = False
-            print("Orthomosaic export tiff big (orthomosaic_tiff_big) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic export tiff big loaded: {}".format(str(orthomosaic_export_tiff_big)))
+            print("Orthomosaic and orthoPhoto export tiff big (export_tiff_big) option doesn't found in config file. Default setting will be used (False).")
+        print("Orthomosaic and orthoPhoto export tiff big loaded: {}".format(str(orthomosaic_export_tiff_big)))
 
         try:
-            orthomosaic_export_jpeg_quality = int(cfg_parser.get('export', 'orthomosaic_jpeg_quality'))
+            orthomosaic_export_jpeg_quality = int(cfg_parser.get('export', 'export_jpeg_quality'))
         except NoOptionError:
             orthomosaic_export_jpeg_quality = 90
-            print("Orthomosaic export jpeg quality (orthomosaic_jpeg_quality) option doesn't found in config file. Default setting will be used (6).")
-        print("Orthomosaic export jpeg quality loaded: {}".format(str(orthomosaic_export_jpeg_quality)))
+            print("Orthomosaic and orthoPhoto export jpeg quality (export_jpeg_quality) option doesn't found in config file. Default setting will be used (6).")
+        print("Orthomosaic and orthoPhoto export jpeg quality loaded: {}".format(str(orthomosaic_export_jpeg_quality)))
 
         try:
-            white_background = cfg_parser.get('export', 'orthomosaic_white_background')
+            white_background = cfg_parser.get('export', 'export_white_background')
             if white_background == "True":
                 orthomosaic_export_white_background = True
             elif white_background == "False":
@@ -804,11 +804,11 @@ class Configuration:
             else:
                 orthomosaic_export_white_background = True
                 print(
-                    "Orthomosaic export white background option format error. Default setting will be used (True).")
+                    "Orthomosaic and orthoPhoto export white background option format error. Default setting will be used (True).")
         except NoOptionError:
             orthomosaic_export_white_background = True
-            print("Orthomosaic export white background (orthomosaic_white_background) option doesn't found in config file. Default setting will be used (True).")
-        print("Orthomosaic export white background loaded: {}".format(str(orthomosaic_export_white_background)))
+            print("Orthomosaic and orthoPhoto export white background (export_white_background) option doesn't found in config file. Default setting will be used (True).")
+        print("Orthomosaic and orthoPhoto export white background loaded: {}".format(str(orthomosaic_export_white_background)))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
@@ -873,7 +873,7 @@ class Configuration:
         self.model_export_markers = model_export_markers
         self.model_export_udim = model_export_udim
 
-        # Orthomosaic export
+        # Orthomosaic and OrthoPhotos export
         self.raster_export_orthomosaic_transform = raster_export_orthomosaic_transform
         self.orthomosaic_export_write_kml = orthomosaic_export_write_kml
         self.orthomosaic_export_write_world = orthomosaic_export_write_world
@@ -883,6 +883,17 @@ class Configuration:
         self.orthomosaic_export_tiff_big = orthomosaic_export_tiff_big
         self.orthomosaic_export_jpeg_quality = orthomosaic_export_jpeg_quality
         self.orthomosaic_export_white_background = orthomosaic_export_white_background
+
+        # TODO: Orthomosaic and OrthoPhotos exports have the same configuration options, Does it make sense ?
+        self.raster_export_orthoPhotos_transform = raster_export_orthomosaic_transform
+        self.orthoPhotos_export_write_kml = orthomosaic_export_write_kml
+        self.orthoPhotos_export_write_world = orthomosaic_export_write_world
+        self.orthoPhotos_export_write_scheme = orthomosaic_export_write_scheme
+        self.orthoPhotos_export_write_alpha = orthomosaic_export_write_alpha
+        self.orthoPhotos_export_tiff_compression = orthomosaic_export_tiff_compression
+        self.orthoPhotos_export_tiff_big = orthomosaic_export_tiff_big
+        self.orthoPhotos_export_jpeg_quality = orthomosaic_export_jpeg_quality
+        self.orthoPhotos_export_white_background = orthomosaic_export_white_background
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
