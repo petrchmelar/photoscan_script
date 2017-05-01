@@ -123,4 +123,7 @@ chunk.exportDem(path=config.export_dem_directory,
                 write_scheme=False, 
                 tiff_big=False)
 
+# export markers
+chunk.exportMarkers(path=config.export_markers_directory)
+
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))

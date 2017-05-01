@@ -98,8 +98,13 @@ class Configuration:
 
         export_dem_directory = os.path.join(exports_directory, "Dem")
         if not os.path.exists(export_dem_directory):
-            print("Export cameras directory {} doesn't exist. Creating new one...".format(export_dem_directory))
+            print("Export dem directory {} doesn't exist. Creating new one...".format(export_dem_directory))
             os.mkdir(export_dem_directory)
+
+        export_markers_directory = os.path.join(exports_directory, "Markers")
+        if not os.path.exists(export_markers_directory):
+            print("Export markers directory {} doesn't exist. Creating new one...".format(export_markers_directory))
+            os.mkdir(export_markers_directory)
 
         images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
         if not os.path.exists(images_directory):
@@ -521,6 +526,7 @@ class Configuration:
         self.exports_directory = exports_directory
         self.export_cameras_directory = export_cameras_directory
         self.export_dem_directory = export_dem_directory
+        self.export_markers_directory = export_markers_directory
         self.log_path = log_path
         self.images_directory = images_directory
         self.mask_path = mask_path
