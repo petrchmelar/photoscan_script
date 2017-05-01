@@ -82,7 +82,7 @@ class Configuration:
             os.mkdir(project_directory)
         print("Project directory configuration successfully loaded: {}".format(project_directory))
 
-		exports_directory = os.path.join(working_directory, cfg_parser.get('general', 'exports_directory'))
+        exports_directory = os.path.join(working_directory, cfg_parser.get('general', 'exports_directory'))
         if not os.path.exists(exports_directory):
             raise IOError("Path {} does not exist".format(exports_directory))
         print("exports_directory directory configuration successfully loaded: {}".format(exports_directory))
@@ -90,6 +90,16 @@ class Configuration:
         if not os.path.exists(log_path):
             raise IOError("Path {} does not exist".format(log_path))
         print("Logs path configuration successfully loaded: {}".format(log_path))
+
+        export_cameras_directory = os.path.join(exports_directory, "Cameras")
+        if not os.path.exists(export_cameras_directory):
+            print("Export cameras directory {} doesn't exist. Creating new one...".format(export_cameras_directory))
+            os.mkdir(export_cameras_directory)
+
+        export_dem_directory = os.path.join(exports_directory, "Dem")
+        if not os.path.exists(export_dem_directory):
+            print("Export cameras directory {} doesn't exist. Creating new one...".format(export_dem_directory))
+            os.mkdir(export_dem_directory)
 
         images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
         if not os.path.exists(images_directory):
@@ -483,12 +493,34 @@ class Configuration:
                 "Cameras rotation order option doesn't found in config file. Default setting will be used (RotationOrderXYZ).")
         print("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
 
+        # export dem raster transformation 
+        try:
+            transform = cfg_parser.get('export', 'raster_transform')
+            if transform == "RasterTransformNone":
+                raster_export_transform = RasterTransformNone
+            elif transform == "RasterTransformValue":
+                raster_export_transform = RasterTransformValue
+            elif transform == "RasterTransformPalette":
+                raster_export_transform = RasterTransformPalette
+            else:
+                raster_export_transform = RasterTransformNone
+                print("Raster transformation export order option format error. Default setting will be used (RasterTransformNone).")
+        except NoOptionError:
+            raster_export_transform = RasterTransformNone
+            print(
+                "Raster transformation export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
+        print("aster transformation export order loaded: {}".format(str(raster_export_transform)))
+
+        # export dem no data 
+        no_export_data = int(cfg_parser.get('export', 'no_data'))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
         self.project_directory = project_directory
-		self.exports_directory = exports_directory
+        self.exports_directory = exports_directory
+        self.export_cameras_directory = export_cameras_directory
+        self.export_dem_directory = export_dem_directory
         self.log_path = log_path
         self.images_directory = images_directory
         self.mask_path = mask_path
@@ -524,9 +556,13 @@ class Configuration:
         # dem
         self.dem_source = dem_source
         self.dem_interpolation = dem_interpolation
+
 		# cameras export
         self.cameras_export_format = cameras_export_format 
         self.cameras_rotation_order = cameras_rotation_order
+        # dem export 
+        self.raster_export_transform = raster_export_transform
+        self.no_export_data = no_export_data
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)

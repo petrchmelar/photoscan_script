@@ -105,14 +105,22 @@ doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx
 doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
 chunk = dock.chunk
 
-
 # build dem
 chunk.buildDem(source=config.dem_source,
               interpolation=config.dem_interpolation)
 
-#export cameras
-chunk.exportCameras(path=os.path.join(config.exports_directory), 
+# export cameras
+chunk.exportCameras(path=config.export_cameras_directory, 
                     format=config.cameras_export_format, 
                     rotation_order=config.cameras_rotation_order)
+
+# export dem
+chunk.exportDem(path=config.export_dem_directory, 
+                raster_transform=config.raster_export_transform,
+                nodata=config.no_export_data,
+                write_kml=False,
+                write_world=False, 
+                write_scheme=False, 
+                tiff_big=False)
 
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
