@@ -792,7 +792,7 @@ class Configuration:
             orthomosaic_export_jpeg_quality = int(cfg_parser.get('export', 'export_jpeg_quality'))
         except NoOptionError:
             orthomosaic_export_jpeg_quality = 90
-            print("Orthomosaic and orthoPhoto export jpeg quality (export_jpeg_quality) option doesn't found in config file. Default setting will be used (6).")
+            print("Orthomosaic and orthoPhoto export jpeg quality (export_jpeg_quality) option doesn't found in config file. Default setting will be used (90).")
         print("Orthomosaic and orthoPhoto export jpeg quality loaded: {}".format(str(orthomosaic_export_jpeg_quality)))
 
         try:
@@ -809,6 +809,59 @@ class Configuration:
             orthomosaic_export_white_background = True
             print("Orthomosaic and orthoPhoto export white background (export_white_background) option doesn't found in config file. Default setting will be used (True).")
         print("Orthomosaic and orthoPhoto export white background loaded: {}".format(str(orthomosaic_export_white_background)))
+
+        # points export
+        try:
+            points_bin = cfg_parser.get('export', 'points_binary')
+            if points_bin == "True":
+                points_export_binary = True
+            elif points_bin == "False":
+                points_export_binary = False
+            else:
+                points_export_binary = True
+                print(
+                    "Points export binary (points_binary) option format error. Default setting will be used (True).")
+        except NoOptionError:
+            points_export_binary = False
+            print("Points export binary (points_binary) option doesn't found in config file. Default setting will be used (True).")
+        print("Points export binary loaded: {}".format(str(points_export_binary)))
+
+        try:
+            points_export_precision = int(cfg_parser.get('export', 'points_precision'))
+        except NoOptionError:
+            points_export_precision = 6
+            print("Points export precision (points_precision) option doesn't found in config file. Default setting will be used (6).")
+        print("Points export precision (points_precision) loaded: {}".format(str(points_export_precision)))
+
+        try:
+            points_normals = cfg_parser.get('export', 'points_normals')
+            if points_normals == "True":
+                points_export_normals = True
+            elif points_normals == "False":
+                points_export_normals = False
+            else:
+                points_export_normals = True
+                print(
+                    "Points export normals (points_binary) option format error. Default setting will be used (True).")
+        except NoOptionError:
+            points_export_normals = False
+            print("Points export normals (points_binary) option doesn't found in config file. Default setting will be used (True).")
+        print("Points export normals loaded: {}".format(str(points_export_normals)))
+
+        try:
+            points_colors = cfg_parser.get('export', 'points_colors')
+            if points_colors == "True":
+                points_export_colors = True
+            elif points_colors == "False":
+                points_export_colors = False
+            else:
+                points_export_colors = True
+                print(
+                    "Points export colors (points_export_colors) option format error. Default setting will be used (True).")
+        except NoOptionError:
+            points_export_colors = False
+            print("Points export colors (points_export_colors) option doesn't found in config file. Default setting will be used (True).")
+        print("Points export colors loaded: {}".format(str(points_export_colors)))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
@@ -894,6 +947,12 @@ class Configuration:
         self.orthoPhotos_export_tiff_big = orthomosaic_export_tiff_big
         self.orthoPhotos_export_jpeg_quality = orthomosaic_export_jpeg_quality
         self.orthoPhotos_export_white_background = orthomosaic_export_white_background
+
+        # points export
+        self.points_export_binary = points_export_binary
+        self.points_export_precision = points_export_precision
+        self.points_export_normals = points_export_normals
+        self.points_export_colors = points_export_colors
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)

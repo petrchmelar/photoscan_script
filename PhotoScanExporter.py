@@ -45,6 +45,11 @@ class PhotoScanExporter:
 			print("Export orthoPhotos directory {} doesn't exist. Creating new one...".format(export_orthophotos_directory))
 			os.mkdir(export_orthophotos_directory)
 
+		export_points_directory = os.path.join(config.exports_directory, "Points")
+		if not os.path.exists(export_points_directory):
+			print("Export points directory {} doesn't exist. Creating new one...".format(export_points_directory))
+			os.mkdir(export_points_directory)
+
 		self.export_cameras_directory = export_cameras_directory
 		self.export_dem_directory = export_dem_directory
 		self.export_markers_directory = export_markers_directory
@@ -52,6 +57,7 @@ class PhotoScanExporter:
 		self.export_model_directory = export_model_directory
 		self.export_orthomosaic_directory = export_orthomosaic_directory
 		self.export_orthophotos_directory = export_orthophotos_directory
+		self.export_points_directory = export_points_directory
 	
 	def exportAll(self):
 		# export cameras
@@ -115,3 +121,9 @@ class PhotoScanExporter:
 						  		tiff_big=self.config.orthoPhotos_export_tiff_big, 
 						  		jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
 						  		white_background=self.config.orthoPhotos_export_white_background)
+		# export points
+		chunk.exportPoints(path=self.export_points_directory, 
+						   binary=self.config.points_export_binary, 
+						   precision=self.config.points_export_precision, 
+						   normals=self.config.points_export_normals, 
+						   colors=self.config.points_export_colors)
