@@ -30,10 +30,16 @@ class PhotoScanExporter:
 			print("Export matches directory {} doesn't exist. Creating new one...".format(export_matches_directory))
 			os.mkdir(export_matches_directory)
 
+		export_model_directory = os.path.join(config.exports_directory, "Model")
+		if not os.path.exists(export_model_directory):
+			print("Export model directory {} doesn't exist. Creating new one...".format(export_model_directory))
+			os.mkdir(export_model_directory)
+
 		self.export_cameras_directory = export_cameras_directory
 		self.export_dem_directory = export_dem_directory
 		self.export_markers_directory = export_markers_directory
 		self.export_matches_directory = export_matches_directory
+		self.export_model_directory = export_model_directory
 	
 	def exportAll(self):
 		# export cameras
@@ -60,3 +66,16 @@ class PhotoScanExporter:
 							export_points=True, 
 							export_markers=False,
 							use_labels=False)
+
+		# export model
+		chunk.exportModel(path=self.export_model_directory, 
+						  binary=self.config.model_export_binary, 
+						  precision=self.config.model_export_precision, 
+						  texture_format=self.config.model_texture_format, 
+						  texture=self.config.model_export_texture,
+						  normals=self.config.model_export_normals, 
+						  colors=self.config.model_export_colors, 
+						  cameras=self.config.model_export_cameras, 
+						  markers=self.config.model_export_markers, 
+						  udim=self.config.model_export_udim,
+						  strip_extensions=False)
