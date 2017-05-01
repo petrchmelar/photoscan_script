@@ -82,6 +82,10 @@ class Configuration:
             os.mkdir(project_directory)
         print("Project directory configuration successfully loaded: {}".format(project_directory))
 
+		exports_directory = os.path.join(working_directory, cfg_parser.get('general', 'exports_directory'))
+        if not os.path.exists(exports_directory):
+            raise IOError("Path {} does not exist".format(exports_directory))
+        print("exports_directory directory configuration successfully loaded: {}".format(exports_directory))
         log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
         if not os.path.exists(log_path):
             raise IOError("Path {} does not exist".format(log_path))
@@ -421,11 +425,70 @@ class Configuration:
                 "DEM interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
         print("DEM interpolation loaded: {}".format(str(dem_interpolation)))
 
+		# cameras export format
+        try:
+            cameras_format = cfg_parser.get('export', 'cameras_format')
+            if cameras_format == "CamerasFormatXML":
+                cameras_export_format = CamerasFormatXML
+            elif cameras_format == "CamerasFormatCHAN":
+                cameras_export_format = CamerasFormatCHAN
+            elif cameras_format == "CamerasFormatBoujou":
+                cameras_export_format = CamerasFormatBoujou
+            elif cameras_format == "CamerasFormatBundler":
+                cameras_export_format = CamerasFormatBundler
+            elif cameras_format == "CamerasFormatOPK":
+                cameras_export_format = CamerasFormatOPK
+            elif cameras_format == "CamerasFormatPATB":
+                cameras_export_format = CamerasFormatPATB
+            elif cameras_format == "CamerasFormatBINGO":
+                cameras_export_format = CamerasFormatBINGO
+            elif cameras_format == "CamerasFormatAeroSys":
+                cameras_export_format = CamerasFormatAeroSys
+            elif cameras_format == "CamerasFormatInpho":
+                cameras_export_format = CamerasFormatInpho
+            elif cameras_format == "CamerasFormatRZML":
+                cameras_export_format = CamerasFormatRZML
+            elif cameras_format == "CamerasFormatVisionMap":
+                cameras_export_format = CamerasFormatVisionMap
+            else:
+                cameras_export_format = CamerasFormatXML
+                print("Cameras export option format error. Default setting will be used (CamerasFormatXML).")
+        except NoOptionError:
+            cameras_export_format = CamerasFormatXML
+            print(
+                "Cameras export format option doesn't found in config file. Default setting will be used (CamerasFormatXML).")
+        print("Cameras export format loaded: {}".format(str(cameras_export_format)))
+
+        #cameras rotation
+        try:
+            rotation_order = cfg_parser.get('export', 'cameras_rotation')
+            if rotation_order == "RotationOrderXYZ":
+                cameras_rotation_order = RotationOrderXYZ
+            elif rotation_order == "RotationOrderXZY":
+                cameras_rotation_order = RotationOrderXZY
+            elif rotation_order == "RotationOrderYXZ":
+                cameras_rotation_order = RotationOrderYXZ
+            elif rotation_order == "RotationOrderYZX":
+                cameras_rotation_order = RotationOrderYZX
+            elif rotation_order == "RotationOrderZXY":
+                cameras_rotation_order = RotationOrderZXY
+            elif rotation_order == "RotationOrderZYX":
+                cameras_rotation_order = RotationOrderZYX
+            else:
+                cameras_rotation_order = RotationOrderXYZ
+                print("Cameras rotation order option format error. Default setting will be used (RotationOrderXYZ).")
+        except NoOptionError:
+            cameras_rotation_order = RotationOrderXYZ
+            print(
+                "Cameras rotation order option doesn't found in config file. Default setting will be used (RotationOrderXYZ).")
+        print("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
+
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
         self.project_directory = project_directory
+		self.exports_directory = exports_directory
         self.log_path = log_path
         self.images_directory = images_directory
         self.mask_path = mask_path
@@ -461,6 +524,9 @@ class Configuration:
         # dem
         self.dem_source = dem_source
         self.dem_interpolation = dem_interpolation
+		# cameras export
+        self.cameras_export_format = cameras_export_format 
+        self.cameras_rotation_order = cameras_rotation_order
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)

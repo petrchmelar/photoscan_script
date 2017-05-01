@@ -110,4 +110,9 @@ chunk = dock.chunk
 chunk.buildDem(source=config.dem_source,
               interpolation=config.dem_interpolation)
 
+#export cameras
+chunk.exportCameras(path=os.path.join(config.exports_directory), 
+                    format=config.cameras_export_format, 
+                    rotation_order=config.cameras_rotation_order)
 
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
