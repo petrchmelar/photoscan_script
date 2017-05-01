@@ -360,6 +360,164 @@ class Configuration:
         self.orthoPhotos_export_jpeg_quality = orthomosaic_export_jpeg_quality
         self.orthoPhotos_export_white_background = orthomosaic_export_white_background
 
+    def ConfigModelExport(self, cfg_parser):
+        
+        # export model binary option
+        try:
+            model_binary = cfg_parser.get('export', 'model_binary')
+            if model_binary == "True":
+                model_export_binary = True
+            elif model_binary == "False":
+                model_export_binary = False
+            else:
+                model_export_binary = True
+                print(
+                    "Model export binary option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_binary = True
+            print("Model export binary (model_binary) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export binary loaded: {}".format(str(model_export_binary)))
+
+        try:
+            model_export_precision = int(cfg_parser.get('export', 'model_precision'))
+        except NoOptionError:
+            model_export_precision = 6
+            print("Model export precision (model_precision) option doesn't found in config file. Default setting will be used (6).")
+        print("Model export precision loaded: {}".format(str(model_export_precision)))
+
+        try:
+            texture_format = cfg_parser.get('export', 'model_texture_format')
+            if texture_format == "ImageFormatJPEG":
+                model_texture_format = ImageFormatJPEG
+            elif texture_format == "ImageFormatTIFF":
+                model_texture_format = ImageFormatTIFF
+            elif texture_format == "ImageFormatPNG":
+                model_texture_format = ImageFormatPNG
+            elif texture_format == "ImageFormatBMP":
+                model_texture_format = ImageFormatBMP
+            elif texture_format == "ImageFormatEXR":
+                model_texture_format = ImageFormatEXR
+            elif texture_format == "ImageFormatPNM":
+                model_texture_format = ImageFormatPNM
+            elif texture_format == "ImageFormatSGI":
+                model_texture_format = ImageFormatSGI
+            elif texture_format == "ImageFormatCR2":
+                model_texture_format = ImageFormatCR2
+            elif texture_format == "ImageFormatSEQ":
+                model_texture_format = ImageFormatSEQ
+            elif texture_format == "ImageFormatARA":
+                model_texture_format = ImageFormatARA
+            elif texture_format == "ImageFormatTGA":
+                model_texture_format = ImageFormatTGA
+            else:
+                model_texture_format = ImageFormatJPEG
+                print("Model texture format option format error. Default setting will be used (ImageFormatJPEG).")
+        except NoOptionError:
+            model_texture_format = ImageFormatJPEG
+            print(
+                "Model texture format option doesn't found in config file. Default setting will be used (ImageFormatJPEG).")
+        print("Model texture format loaded: {}".format(str(model_texture_format)))
+
+        try:
+            model_texture = cfg_parser.get('export', 'model_texture')
+            if model_texture == "True":
+                model_export_texture = True
+            elif model_texture == "False":
+                model_export_texture = False
+            else:
+                model_export_texture = True
+                print(
+                    "Model export texture option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_texture = True
+            print("Model export texture (model_texture) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export texture loaded: {}".format(str(model_export_texture)))
+
+        try:
+            model_normals = cfg_parser.get('export', 'model_normals')
+            if model_normals == "True":
+                model_export_normals = True
+            elif model_normals == "False":
+                model_export_normals = False
+            else:
+                model_export_normals = True
+                print(
+                    "Model export normals option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_normals = True
+            print("Model export normals (model_normals) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export normals loaded: {}".format(str(model_export_normals)))
+
+        try:
+            model_colors = cfg_parser.get('export', 'model_colors')
+            if model_colors == "True":
+                model_export_colors = True
+            elif model_colors == "False":
+                model_export_colors = False
+            else:
+                model_export_colors = True
+                print(
+                    "Model export colors option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_colors = True
+            print("Model export colors (model_colors) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export colors loaded: {}".format(str(model_export_colors)))
+
+        try:
+            model_cameras = cfg_parser.get('export', 'model_cameras')
+            if model_cameras == "True":
+                model_export_cameras = True
+            elif model_cameras == "False":
+                model_export_cameras = False
+            else:
+                model_export_cameras = True
+                print(
+                    "Model export cameras option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_cameras = True
+            print("Model export cameras (model_cameras) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export cameras loaded: {}".format(str(model_export_cameras)))
+
+        try:
+            model_markers = cfg_parser.get('export', 'model_markers')
+            if model_markers == "True":
+                model_export_markers = True
+            elif model_markers == "False":
+                model_export_markers = False
+            else:
+                model_export_markers = True
+                print(
+                    "Model export markers option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_markers = True
+            print("Model export markers (model_markers) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export markers loaded: {}".format(str(model_export_markers)))
+
+        try:
+            model_udim = cfg_parser.get('export', 'model_udim')
+            if model_udim == "True":
+                model_export_udim = True
+            elif model_udim == "False":
+                model_export_udim = False
+            else:
+                model_export_udim = True
+                print(
+                    "Model export udim option format error. Default setting will be used (True).")
+        except NoOptionError:
+            model_export_udim = True
+            print("Model export udim (model_udim) option doesn't found in config file. Default setting will be used (True).")
+        print("Model export markers loaded: {}".format(str(model_export_udim)))
+
+        # model export
+        self.model_export_binary = model_export_binary
+        self.model_texture_format = model_texture_format
+        self.model_export_texture = model_export_texture
+        self.model_export_normals = model_export_normals
+        self.model_export_colors = model_export_colors
+        self.model_export_cameras = model_export_cameras
+        self.model_export_markers = model_export_markers
+        self.model_export_udim = model_export_udim
+
     def ConfigureGeneral(self):
         pass
 
@@ -835,152 +993,6 @@ class Configuration:
         matches_export_precision = int(cfg_parser.get('export', 'matches_precision'))
         print("Matches export precision loaded: {}".format(str(matches_export_precision)))
 
-        # export model binary option
-        try:
-            model_binary = cfg_parser.get('export', 'model_binary')
-            if model_binary == "True":
-                model_export_binary = True
-            elif model_binary == "False":
-                model_export_binary = False
-            else:
-                model_export_binary = True
-                print(
-                    "Model export binary option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_binary = True
-            print("Model export binary (model_binary) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export binary loaded: {}".format(str(model_export_binary)))
-
-        try:
-            model_export_precision = int(cfg_parser.get('export', 'model_precision'))
-        except NoOptionError:
-            model_export_precision = 6
-            print("Model export precision (model_precision) option doesn't found in config file. Default setting will be used (6).")
-        print("Model export precision loaded: {}".format(str(model_export_precision)))
-
-        try:
-            texture_format = cfg_parser.get('export', 'model_texture_format')
-            if texture_format == "ImageFormatJPEG":
-                model_texture_format = ImageFormatJPEG
-            elif texture_format == "ImageFormatTIFF":
-                model_texture_format = ImageFormatTIFF
-            elif texture_format == "ImageFormatPNG":
-                model_texture_format = ImageFormatPNG
-            elif texture_format == "ImageFormatBMP":
-                model_texture_format = ImageFormatBMP
-            elif texture_format == "ImageFormatEXR":
-                model_texture_format = ImageFormatEXR
-            elif texture_format == "ImageFormatPNM":
-                model_texture_format = ImageFormatPNM
-            elif texture_format == "ImageFormatSGI":
-                model_texture_format = ImageFormatSGI
-            elif texture_format == "ImageFormatCR2":
-                model_texture_format = ImageFormatCR2
-            elif texture_format == "ImageFormatSEQ":
-                model_texture_format = ImageFormatSEQ
-            elif texture_format == "ImageFormatARA":
-                model_texture_format = ImageFormatARA
-            elif texture_format == "ImageFormatTGA":
-                model_texture_format = ImageFormatTGA
-            else:
-                model_texture_format = ImageFormatJPEG
-                print("Model texture format option format error. Default setting will be used (ImageFormatJPEG).")
-        except NoOptionError:
-            model_texture_format = ImageFormatJPEG
-            print(
-                "Model texture format option doesn't found in config file. Default setting will be used (ImageFormatJPEG).")
-        print("Model texture format loaded: {}".format(str(model_texture_format)))
-
-        try:
-            model_texture = cfg_parser.get('export', 'model_texture')
-            if model_texture == "True":
-                model_export_texture = True
-            elif model_texture == "False":
-                model_export_texture = False
-            else:
-                model_export_texture = True
-                print(
-                    "Model export texture option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_texture = True
-            print("Model export texture (model_texture) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export texture loaded: {}".format(str(model_export_texture)))
-
-        try:
-            model_normals = cfg_parser.get('export', 'model_normals')
-            if model_normals == "True":
-                model_export_normals = True
-            elif model_normals == "False":
-                model_export_normals = False
-            else:
-                model_export_normals = True
-                print(
-                    "Model export normals option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_normals = True
-            print("Model export normals (model_normals) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export normals loaded: {}".format(str(model_export_normals)))
-
-        try:
-            model_colors = cfg_parser.get('export', 'model_colors')
-            if model_colors == "True":
-                model_export_colors = True
-            elif model_colors == "False":
-                model_export_colors = False
-            else:
-                model_export_colors = True
-                print(
-                    "Model export colors option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_colors = True
-            print("Model export colors (model_colors) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export colors loaded: {}".format(str(model_export_colors)))
-
-        try:
-            model_cameras = cfg_parser.get('export', 'model_cameras')
-            if model_cameras == "True":
-                model_export_cameras = True
-            elif model_cameras == "False":
-                model_export_cameras = False
-            else:
-                model_export_cameras = True
-                print(
-                    "Model export cameras option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_cameras = True
-            print("Model export cameras (model_cameras) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export cameras loaded: {}".format(str(model_export_cameras)))
-
-        try:
-            model_markers = cfg_parser.get('export', 'model_markers')
-            if model_markers == "True":
-                model_export_markers = True
-            elif model_markers == "False":
-                model_export_markers = False
-            else:
-                model_export_markers = True
-                print(
-                    "Model export markers option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_markers = True
-            print("Model export markers (model_markers) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export markers loaded: {}".format(str(model_export_markers)))
-
-        try:
-            model_udim = cfg_parser.get('export', 'model_udim')
-            if model_udim == "True":
-                model_export_udim = True
-            elif model_udim == "False":
-                model_export_udim = False
-            else:
-                model_export_udim = True
-                print(
-                    "Model export udim option format error. Default setting will be used (True).")
-        except NoOptionError:
-            model_export_udim = True
-            print("Model export udim (model_udim) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export markers loaded: {}".format(str(model_export_udim)))
-
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -1034,16 +1046,7 @@ class Configuration:
         self.matches_export_format = matches_export_format
         self.matches_export_precision = matches_export_precision 
 
-        # model export
-        self.model_export_binary = model_export_binary
-        self.model_texture_format = model_texture_format
-        self.model_export_texture = model_export_texture
-        self.model_export_normals = model_export_normals
-        self.model_export_colors = model_export_colors
-        self.model_export_cameras = model_export_cameras
-        self.model_export_markers = model_export_markers
-        self.model_export_udim = model_export_udim
-
+        self.ConfigModelExport(cfg_parser)
         self.ConfigOrthomosaicOrthoPhotoExport(cfg_parser)
         self.ConfigPointsExport(cfg_parser)
         self.ConfigShapeItemsExport(cfg_parser)
