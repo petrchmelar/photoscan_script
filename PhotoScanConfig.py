@@ -545,6 +545,33 @@ class Configuration:
         self.matches_export_format = matches_export_format
         self.matches_export_precision = matches_export_precision 
 
+    def ConfigDemExport(self, cfg_parser):
+        
+        # export dem raster transformation 
+        try:
+            transform = cfg_parser.get('export', 'raster_transform_dem')
+            if transform == "RasterTransformNone":
+                raster_export_dem_transform = RasterTransformNone
+            elif transform == "RasterTransformValue":
+                raster_export_dem_transform = RasterTransformValue
+            elif transform == "RasterTransformPalette":
+                raster_export_dem_transform = RasterTransformPalette
+            else:
+                raster_export_dem_transform = RasterTransformNone
+                print("Raster transformation of dem export option format error. Default setting will be used (RasterTransformNone).")
+        except NoOptionError:
+            raster_export_dem_transform = RasterTransformNone
+            print(
+                "Raster transformation of dem export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
+        print("Raster transformation of dem export loaded: {}".format(str(raster_export_dem_transform)))
+
+        # export dem no data 
+        no_export_data = int(cfg_parser.get('export', 'no_data'))
+        print("Raster no data option loaded: {}".format(str(no_export_data)))
+        # dem export 
+        self.raster_export_dem_transform = raster_export_dem_transform
+        self.no_export_data = no_export_data
+
     def ConfigureGeneral(self):
         pass
 
@@ -977,28 +1004,6 @@ class Configuration:
                 "Cameras rotation order option doesn't found in config file. Default setting will be used (RotationOrderXYZ).")
         print("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
 
-        # export dem raster transformation 
-        try:
-            transform = cfg_parser.get('export', 'raster_transform_dem')
-            if transform == "RasterTransformNone":
-                raster_export_dem_transform = RasterTransformNone
-            elif transform == "RasterTransformValue":
-                raster_export_dem_transform = RasterTransformValue
-            elif transform == "RasterTransformPalette":
-                raster_export_dem_transform = RasterTransformPalette
-            else:
-                raster_export_dem_transform = RasterTransformNone
-                print("Raster transformation of dem export option format error. Default setting will be used (RasterTransformNone).")
-        except NoOptionError:
-            raster_export_dem_transform = RasterTransformNone
-            print(
-                "Raster transformation of dem export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
-        print("Raster transformation of dem export loaded: {}".format(str(raster_export_dem_transform)))
-
-        # export dem no data 
-        no_export_data = int(cfg_parser.get('export', 'no_data'))
-        print("Raster no data option loaded: {}".format(str(no_export_data)))
-
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -1044,10 +1049,7 @@ class Configuration:
         self.cameras_export_format = cameras_export_format 
         self.cameras_rotation_order = cameras_rotation_order
 
-        # dem export 
-        self.raster_export_dem_transform = raster_export_dem_transform
-        self.no_export_data = no_export_data
-
+        self.ConfigDemExport(cfg_parser)
         self.ConfigMatchesExport(cfg_parser)
         self.ConfigModelExport(cfg_parser)
         self.ConfigOrthomosaicOrthoPhotoExport(cfg_parser)
