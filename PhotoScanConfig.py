@@ -53,6 +53,92 @@ class Configuration:
         if config_file_path is not None:
             self.LoadConfigFile(config_file_path)
 
+    def ConfigTiledModelExport(self, cfg_parser):
+        
+        # tiled model export
+        try:
+            tiled_model_format = cfg_parser.get('export', 'tiled_model_format')
+            if tiled_model_format == "TiledModelFormatTLS":
+                tiled_model_export_format = TiledModelFormatTLS
+            elif tiled_model_format == "TiledModelFormatLOD":
+                tiled_model_export_format = TiledModelFormatLOD
+            elif tiled_model_format == "TiledModelFormatZIP":
+                tiled_model_export_format = TiledModelFormatZIP
+            else:
+                tiled_model_export_format = TiledModelFormatTLS
+                print("Tiled model format (tiled_model_format) option format error. Default setting will be used (TiledModelFormatTLS).")
+        except NoOptionError:
+            tiled_model_export_format = TiledModelFormatTLS
+            print(
+                "Tiled model format (tiled_model_format) option doesn't found in config file. Default setting will be used (TiledModelFormatTLS).")
+        print("Tiled model format loaded: {}".format(str(tiled_model_export_format)))
+
+        try:
+            tiled_model_mesh_format = cfg_parser.get('export', 'tiled_model_mesh_format')
+            if tiled_model_mesh_format == "ModelFormatOBJ":
+                tiled_model_export_mesh_format = ModelFormatOBJ
+            elif tiled_model_mesh_format == "ModelFormat3DS":
+                tiled_model_export_mesh_format = ModelFormat3DS
+            elif tiled_model_mesh_format == "ModelFormatVRML":
+                tiled_model_export_mesh_format = ModelFormatVRML
+            elif tiled_model_mesh_format == "ModelFormatPLY":
+                tiled_model_export_mesh_format = ModelFormatPLY
+            elif tiled_model_mesh_format == "ModelFormatCOLLADA":
+                tiled_model_export_mesh_format = ModelFormatCOLLADA
+            elif tiled_model_mesh_format == "ModelFormatU3D":
+                tiled_model_export_mesh_format = ModelFormatU3D
+            elif tiled_model_mesh_format == "ModelFormatPDF":
+                tiled_model_export_mesh_format = ModelFormatPDF
+            elif tiled_model_mesh_format == "ModelFormatDXF":
+                tiled_model_export_mesh_format = ModelFormatDXF
+            elif tiled_model_mesh_format == "ModelFormatFBX":
+                tiled_model_export_mesh_format = ModelFormatFBX
+            elif tiled_model_mesh_format == "ModelFormatKMZ":
+                tiled_model_export_mesh_format = ModelFormatKMZ
+            elif tiled_model_mesh_format == "ModelFormatCTM":
+                tiled_model_export_mesh_format = ModelFormatCTM
+            elif tiled_model_mesh_format == "ModelFormatSTL":
+                tiled_model_export_mesh_format = ModelFormatSTL
+            elif tiled_model_mesh_format == "ModelFormatCTM":
+                tiled_model_export_mesh_format = ModelFormatDXF_3DF
+            elif tiled_model_mesh_format == "ModelFormatDXF_3DF":
+                tiled_model_export_mesh_format = ModelFormatTLS
+            else:
+                tiled_model_export_mesh_format = ModelFormatCOLLADA
+                print("Tiled model mesh format (tiled_model_mesh_format) option format error. Default setting will be used (ModelFormatCOLLADA).")
+        except NoOptionError:
+            tiled_model_export_mesh_format = ModelFormatCOLLADA
+            print(
+                "Tiled model mesh format (tiled_model_mesh_format) option doesn't found in config file. Default setting will be used (ModelFormatCOLLADA).")
+        print("Tiled model mesh format  loaded: {}".format(str(tiled_model_export_mesh_format)))
+
+        # tiled model
+        self.tiled_model_export_format = tiled_model_export_format
+        self.tiled_model_export_mesh_format = tiled_model_export_mesh_format
+
+    def ConfigShapeItemsExport(self, cfg_parser):
+        
+        # shapes export
+        try:
+            shapes_items = cfg_parser.get('export', 'shapes_items')
+            if shapes_items == "Point":
+                export_shapes_items = Shape.Point
+            elif shapes_items == "Polyline":
+                export_shapes_items = Shape.Polyline
+            elif shapes_items == "Polygon":
+                export_shapes_items = Shape.Polygon
+            else:
+                export_shapes_items = Shape.Polygon
+                print("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
+        except NoOptionError:
+            export_shapes_items = Shape.Polygon
+            print(
+                "Shape items (shapes_items) export option doesn't found in config file. Default setting will be used (Polygon).")
+        print("Shape items loaded: {}".format(str(export_shapes_items)))
+
+        # shape items
+        self.export_shapes_items = export_shapes_items
+
     def ConfigureGeneral(self):
         pass
 
@@ -863,81 +949,6 @@ class Configuration:
             print("Points export colors (points_export_colors) option doesn't found in config file. Default setting will be used (True).")
         print("Points export colors loaded: {}".format(str(points_export_colors)))
 
-        # shapes export
-        try:
-            shapes_items = cfg_parser.get('export', 'shapes_items')
-            if shapes_items == "Point":
-                export_shapes_items = Shape.Point
-            elif shapes_items == "Polyline":
-                export_shapes_items = Shape.Polyline
-            elif shapes_items == "Polygon":
-                export_shapes_items = Shape.Polygon
-            else:
-                export_shapes_items = Shape.Polygon
-                print("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
-        except NoOptionError:
-            export_shapes_items = Shape.Polygon
-            print(
-                "Shape items (shapes_items) export option doesn't found in config file. Default setting will be used (Polygon).")
-        print("Shape items loaded: {}".format(str(export_shapes_items)))
-
-        # tiled model export
-        try:
-            tiled_model_format = cfg_parser.get('export', 'tiled_model_format')
-            if tiled_model_format == "TiledModelFormatTLS":
-                tiled_model_export_format = TiledModelFormatTLS
-            elif tiled_model_format == "TiledModelFormatLOD":
-                tiled_model_export_format = TiledModelFormatLOD
-            elif tiled_model_format == "TiledModelFormatZIP":
-                tiled_model_export_format = TiledModelFormatZIP
-            else:
-                tiled_model_export_format = TiledModelFormatTLS
-                print("Tiled model format (tiled_model_format) option format error. Default setting will be used (TiledModelFormatTLS).")
-        except NoOptionError:
-            tiled_model_export_format = TiledModelFormatTLS
-            print(
-                "Tiled model format (tiled_model_format) option doesn't found in config file. Default setting will be used (TiledModelFormatTLS).")
-        print("Tiled model format loaded: {}".format(str(tiled_model_export_format)))
-
-        try:
-            tiled_model_mesh_format = cfg_parser.get('export', 'tiled_model_mesh_format')
-            if tiled_model_mesh_format == "ModelFormatOBJ":
-                tiled_model_export_mesh_format = ModelFormatOBJ
-            elif tiled_model_mesh_format == "ModelFormat3DS":
-                tiled_model_export_mesh_format = ModelFormat3DS
-            elif tiled_model_mesh_format == "ModelFormatVRML":
-                tiled_model_export_mesh_format = ModelFormatVRML
-            elif tiled_model_mesh_format == "ModelFormatPLY":
-                tiled_model_export_mesh_format = ModelFormatPLY
-            elif tiled_model_mesh_format == "ModelFormatCOLLADA":
-                tiled_model_export_mesh_format = ModelFormatCOLLADA
-            elif tiled_model_mesh_format == "ModelFormatU3D":
-                tiled_model_export_mesh_format = ModelFormatU3D
-            elif tiled_model_mesh_format == "ModelFormatPDF":
-                tiled_model_export_mesh_format = ModelFormatPDF
-            elif tiled_model_mesh_format == "ModelFormatDXF":
-                tiled_model_export_mesh_format = ModelFormatDXF
-            elif tiled_model_mesh_format == "ModelFormatFBX":
-                tiled_model_export_mesh_format = ModelFormatFBX
-            elif tiled_model_mesh_format == "ModelFormatKMZ":
-                tiled_model_export_mesh_format = ModelFormatKMZ
-            elif tiled_model_mesh_format == "ModelFormatCTM":
-                tiled_model_export_mesh_format = ModelFormatCTM
-            elif tiled_model_mesh_format == "ModelFormatSTL":
-                tiled_model_export_mesh_format = ModelFormatSTL
-            elif tiled_model_mesh_format == "ModelFormatCTM":
-                tiled_model_export_mesh_format = ModelFormatDXF_3DF
-            elif tiled_model_mesh_format == "ModelFormatDXF_3DF":
-                tiled_model_export_mesh_format = ModelFormatTLS
-            else:
-                tiled_model_export_mesh_format = ModelFormatCOLLADA
-                print("Tiled model mesh format (tiled_model_mesh_format) option format error. Default setting will be used (ModelFormatCOLLADA).")
-        except NoOptionError:
-            tiled_model_export_mesh_format = ModelFormatCOLLADA
-            print(
-                "Tiled model mesh format (tiled_model_mesh_format) option doesn't found in config file. Default setting will be used (ModelFormatCOLLADA).")
-        print("iled model mesh format  loaded: {}".format(str(tiled_model_export_mesh_format)))
-
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -1029,12 +1040,8 @@ class Configuration:
         self.points_export_normals = points_export_normals
         self.points_export_colors = points_export_colors
 
-        # shape items
-        self.export_shapes_items = export_shapes_items
-
-        # tiled model
-        self.tiled_model_export_format = tiled_model_export_format
-        self.tiled_model_export_mesh_format = tiled_model_export_mesh_format
+        self.ConfigShapeItemsExport(cfg_parser)
+        self.ConfigTiledModelExport(cfg_parser)
 
     def LoadDefaultConfig(self):
         # GENERAL section (this values  need to be loaded from the config file...)
