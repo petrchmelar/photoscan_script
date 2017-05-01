@@ -518,6 +518,33 @@ class Configuration:
         self.model_export_markers = model_export_markers
         self.model_export_udim = model_export_udim
 
+    def ConfigMatchesExport(self, cfg_parser):
+        
+        # export matches format
+        try:
+            matches_format = cfg_parser.get('export', 'matches_format')
+            if matches_format == "MatchesFormatBINGO":
+                matches_export_format = MatchesFormatBINGO
+            elif matches_format == "MatchesFormatORIMA":
+                matches_export_format = MatchesFormatORIMA
+            elif matches_format == "MatchesFormatPATB":
+                matches_export_format = MatchesFormatPATB
+            else:
+                matches_export_format = MatchesFormatBINGO
+                print("Matches export format option format error. Default setting will be used (MatchesFormatBINGO).")
+        except NoOptionError:
+            matches_export_format = MatchesFormatBINGO
+            print(
+                "Matches export format option doesn't found in config file. Default setting will be used (MatchesFormatBINGO).")
+        print("Matches export format loaded: {}".format(str(matches_export_format)))
+
+        matches_export_precision = int(cfg_parser.get('export', 'matches_precision'))
+        print("Matches export precision loaded: {}".format(str(matches_export_precision)))
+
+        # matches export
+        self.matches_export_format = matches_export_format
+        self.matches_export_precision = matches_export_precision 
+
     def ConfigureGeneral(self):
         pass
 
@@ -972,27 +999,6 @@ class Configuration:
         no_export_data = int(cfg_parser.get('export', 'no_data'))
         print("Raster no data option loaded: {}".format(str(no_export_data)))
 
-        # export matches format
-        try:
-            matches_format = cfg_parser.get('export', 'matches_format')
-            if matches_format == "MatchesFormatBINGO":
-                matches_export_format = MatchesFormatBINGO
-            elif matches_format == "MatchesFormatORIMA":
-                matches_export_format = MatchesFormatORIMA
-            elif matches_format == "MatchesFormatPATB":
-                matches_export_format = MatchesFormatPATB
-            else:
-                matches_export_format = MatchesFormatBINGO
-                print("Matches export format option format error. Default setting will be used (MatchesFormatBINGO).")
-        except NoOptionError:
-            matches_export_format = MatchesFormatBINGO
-            print(
-                "Matches export format option doesn't found in config file. Default setting will be used (MatchesFormatBINGO).")
-        print("Matches export format loaded: {}".format(str(matches_export_format)))
-
-        matches_export_precision = int(cfg_parser.get('export', 'matches_precision'))
-        print("Matches export precision loaded: {}".format(str(matches_export_precision)))
-
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name
         self.working_directory = working_directory
@@ -1042,10 +1048,7 @@ class Configuration:
         self.raster_export_dem_transform = raster_export_dem_transform
         self.no_export_data = no_export_data
 
-        # matches export
-        self.matches_export_format = matches_export_format
-        self.matches_export_precision = matches_export_precision 
-
+        self.ConfigMatchesExport(cfg_parser)
         self.ConfigModelExport(cfg_parser)
         self.ConfigOrthomosaicOrthoPhotoExport(cfg_parser)
         self.ConfigPointsExport(cfg_parser)
