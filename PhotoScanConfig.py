@@ -84,27 +84,14 @@ class Configuration:
 
         exports_directory = os.path.join(working_directory, cfg_parser.get('general', 'exports_directory'))
         if not os.path.exists(exports_directory):
-            raise IOError("Path {} does not exist".format(exports_directory))
+            print("Exports directory {} doesn't exist. Creating new one...".format(exports_directory))
+            os.mkdir(exports_directory)
         print("exports_directory directory configuration successfully loaded: {}".format(exports_directory))
+
         log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
         if not os.path.exists(log_path):
             raise IOError("Path {} does not exist".format(log_path))
         print("Logs path configuration successfully loaded: {}".format(log_path))
-
-        export_cameras_directory = os.path.join(exports_directory, "Cameras")
-        if not os.path.exists(export_cameras_directory):
-            print("Export cameras directory {} doesn't exist. Creating new one...".format(export_cameras_directory))
-            os.mkdir(export_cameras_directory)
-
-        export_dem_directory = os.path.join(exports_directory, "Dem")
-        if not os.path.exists(export_dem_directory):
-            print("Export dem directory {} doesn't exist. Creating new one...".format(export_dem_directory))
-            os.mkdir(export_dem_directory)
-
-        export_markers_directory = os.path.join(exports_directory, "Markers")
-        if not os.path.exists(export_markers_directory):
-            print("Export markers directory {} doesn't exist. Creating new one...".format(export_markers_directory))
-            os.mkdir(export_markers_directory)
 
         images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
         if not os.path.exists(images_directory):
@@ -524,9 +511,6 @@ class Configuration:
         self.working_directory = working_directory
         self.project_directory = project_directory
         self.exports_directory = exports_directory
-        self.export_cameras_directory = export_cameras_directory
-        self.export_dem_directory = export_dem_directory
-        self.export_markers_directory = export_markers_directory
         self.log_path = log_path
         self.images_directory = images_directory
         self.mask_path = mask_path
