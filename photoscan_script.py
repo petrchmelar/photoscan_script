@@ -1,10 +1,28 @@
 from PhotoScan import *
+import logging
 import argparse
 import glob
 import os
+import sys
 
 from PhotoScanConfig import Configuration
 from PhotoScanExporter import PhotoScanExporter
+
+# loger initialization
+# setup logger
+logger = logging.getLogger("photoscan_script")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# file handler
+file_handler = logging.FileHandler('{}/script.log'.format(os.path.dirname(os.path.abspath(__file__))))
+file_handler.setFormatter(formatter)
+# stdout handler
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stdout_handler)
 
 # Load config using python argparse if the config file is available
 config_file_path = ""
@@ -20,10 +38,10 @@ else:
 
 # check if the config file exists
 if os.path.exists(config_file_path):
-    print("Your config file path is {}".format(config_file_path))
+    logger.info("Your config file path is {}".format(config_file_path))
 else:
     app.messageBox("Invalid config file path: \"{}\"".format(config_file_path))
-    print("Invalid config file path: \"{}\"".format(config_file_path))
+    logger.error("Invalid config file path: \"{}\"".format(config_file_path))
 
 config = Configuration(config_file_path=config_file_path)
 
