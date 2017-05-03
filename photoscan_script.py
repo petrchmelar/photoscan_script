@@ -12,7 +12,7 @@ from PhotoScanExporter import PhotoScanExporter
 # setup logger
 logger = logging.getLogger('photoscan_script')
 logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('[SCRIPT] %(asctime)s:%(name)s:%(levelname)s: %(message)s')
 
 # file handler
 file_handler = logging.FileHandler('{}/script.log'.format(os.path.dirname(os.path.abspath(__file__))),
