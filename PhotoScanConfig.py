@@ -17,7 +17,7 @@ class Configuration:
         self.mask_path = ""
 
         # photos alignment section (this configurations are optional)
-        # default values could be set by calling LoadDefaultConfig method
+        # default values should be set by calling LoadDefaultConfig method
         self.photos_alignment_accuracy = None
         self.photos_alignment_preselection = None
         self.photos_alignment_generic_preselection = None
@@ -25,28 +25,78 @@ class Configuration:
         self.photos_alignment_tie_point_limit = None
 
         # dense cloud section (this configurations are optional)
-        # default values could be set by calling LoadDefaultConfig method
+        # default values shoudl be set by calling LoadDefaultConfig method
         self.dense_cloud_quality = None
         self.dense_cloud_filtering = None
         self.dense_cloud_keep_depth = None
         self.dense_cloud_reuse_depth = None
 
         # texture section (this configurations are optional)
-        # default values could be set by calling LoadDefaultConfig method
+        # default values shoudl be set by calling LoadDefaultConfig method
         self.texture_count = None
         self.texture_mapping = None
 
         # build texture section (this configurations are optional)
-        # default values could be set by calling LoadDefaultConfig method
+        # default values shoudl be set by calling LoadDefaultConfig method
         self.texture_blending = None
         self.texture_color_correction = None
         self.texture_size = None
         self.texture_fill_holes = None
 
         # dem section (this configurations are optional)
-        # default values could be set by calling LoadDefaultConfig method
+        # default values shoudl be set by calling LoadDefaultConfig method
         self.dem_source = None
         self.dem_interpolation = None
+
+        # export section (this configurations are optional)
+        # default values shoudl be set by calling LoadDefaultConfig method
+        # cameras export
+        self.cameras_export_format = None
+        self.cameras_rotation_order = None
+        # dem export
+        self.raster_export_dem_transform = None
+        self.no_export_data = None
+        # matches export
+        self.matches_export_format = None
+        self.matches_export_precision = None
+        # model export
+        self.model_export_binary = None
+        self.model_texture_format = None
+        self.model_export_texture = None
+        self.model_export_normals = None
+        self.model_export_colors = None
+        self.model_export_cameras = None
+        self.model_export_markers = None
+        self.model_export_udim = None
+        # Orthomosaic and OrthoPhotos export
+        self.raster_export_orthomosaic_transform = None
+        self.orthomosaic_export_write_kml = None
+        self.orthomosaic_export_write_world = None
+        self.orthomosaic_export_write_scheme = None
+        self.orthomosaic_export_write_alpha = None
+        self.orthomosaic_export_tiff_compression = None
+        self.orthomosaic_export_tiff_big = None
+        self.orthomosaic_export_jpeg_quality = None
+        self.orthomosaic_export_white_background = None
+        self.raster_export_orthoPhotos_transform = None
+        self.orthoPhotos_export_write_kml = None
+        self.orthoPhotos_export_write_world = None
+        self.orthoPhotos_export_write_scheme = None
+        self.orthoPhotos_export_write_alpha = None
+        self.orthoPhotos_export_tiff_compression = None
+        self.orthoPhotos_export_tiff_big = None
+        self.orthoPhotos_export_jpeg_quality = None
+        self.orthoPhotos_export_white_background = None
+        # points export
+        self.points_export_binary = None
+        self.points_export_precision = None
+        self.points_export_normals = None
+        self.points_export_colors = None
+        # shape items export
+        self.export_shapes_items = None
+        # tiled model
+        self.tiled_model_export_format = None
+        self.tiled_model_export_mesh_format = None
 
         self.LoadDefaultConfig()
         # load config file if path is available
@@ -54,7 +104,7 @@ class Configuration:
             self.LoadConfigFile(config_file_path)
 
     def ConfigTiledModelExport(self, cfg_parser):
-        
+
         # tiled model export
         try:
             tiled_model_format = cfg_parser.get('export', 'tiled_model_format')
@@ -117,21 +167,21 @@ class Configuration:
         self.tiled_model_export_mesh_format = tiled_model_export_mesh_format
 
     def ConfigShapeItemsExport(self, cfg_parser):
-        
+
         # shapes export
         try:
             shapes_items = cfg_parser.get('export', 'shapes_items')
             if shapes_items == "Point":
-                export_shapes_items = Shape.Point
+                export_shapes_items = Shape.Type.Point
             elif shapes_items == "Polyline":
-                export_shapes_items = Shape.Polyline
+                export_shapes_items = Shape.Type.Polyline
             elif shapes_items == "Polygon":
-                export_shapes_items = Shape.Polygon
+                export_shapes_items = Shape.Type.Polygon
             else:
-                export_shapes_items = Shape.Polygon
+                export_shapes_items = Shape.Type.Polygon
                 print("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
         except NoOptionError:
-            export_shapes_items = Shape.Polygon
+            export_shapes_items = Shape.Type.Polygon
             print(
                 "Shape items (shapes_items) export option doesn't found in config file. Default setting will be used (Polygon).")
         print("Shape items loaded: {}".format(str(export_shapes_items)))
@@ -140,7 +190,7 @@ class Configuration:
         self.export_shapes_items = export_shapes_items
 
     def ConfigPointsExport(self, cfg_parser):
-        
+
         # points export
         try:
             points_bin = cfg_parser.get('export', 'points_binary')
@@ -201,8 +251,8 @@ class Configuration:
         self.points_export_colors = points_export_colors
 
     def ConfigOrthomosaicOrthoPhotoExport(self, cfg_parser):
-        
-        # export orthomosaic raster transformation 
+
+        # export orthomosaic raster transformation
         try:
             transform_orthomosaic = cfg_parser.get('export', 'export_raster_transform')
             if transform_orthomosaic == "RasterTransformNone":
@@ -361,7 +411,7 @@ class Configuration:
         self.orthoPhotos_export_white_background = orthomosaic_export_white_background
 
     def ConfigModelExport(self, cfg_parser):
-        
+
         # export model binary option
         try:
             model_binary = cfg_parser.get('export', 'model_binary')
@@ -519,7 +569,7 @@ class Configuration:
         self.model_export_udim = model_export_udim
 
     def ConfigMatchesExport(self, cfg_parser):
-        
+
         # export matches format
         try:
             matches_format = cfg_parser.get('export', 'matches_format')
@@ -543,11 +593,11 @@ class Configuration:
 
         # matches export
         self.matches_export_format = matches_export_format
-        self.matches_export_precision = matches_export_precision 
+        self.matches_export_precision = matches_export_precision
 
     def ConfigDemExport(self, cfg_parser):
-        
-        # export dem raster transformation 
+
+        # export dem raster transformation
         try:
             transform = cfg_parser.get('export', 'raster_transform_dem')
             if transform == "RasterTransformNone":
@@ -565,15 +615,15 @@ class Configuration:
                 "Raster transformation of dem export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
         print("Raster transformation of dem export loaded: {}".format(str(raster_export_dem_transform)))
 
-        # export dem no data 
+        # export dem no data
         no_export_data = int(cfg_parser.get('export', 'no_data'))
         print("Raster no data option loaded: {}".format(str(no_export_data)))
-        # dem export 
+        # dem export
         self.raster_export_dem_transform = raster_export_dem_transform
         self.no_export_data = no_export_data
 
     def ConfigCamerasExport(self, cfg_parser):
-        
+
         # cameras export format
         try:
             cameras_format = cfg_parser.get('export', 'cameras_format')
@@ -633,7 +683,7 @@ class Configuration:
         print("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
 
         # cameras export
-        self.cameras_export_format = cameras_export_format 
+        self.cameras_export_format = cameras_export_format
         self.cameras_rotation_order = cameras_rotation_order
 
     def ConfigureGeneral(self):
@@ -1100,3 +1150,52 @@ class Configuration:
         # dem
         self.dem_source = DenseCloudData
         self.dem_interpolation = EnabledInterpolation
+
+        # export section
+        # cameras export
+        self.cameras_export_format = CamerasFormatXML
+        self.cameras_rotation_order = RotationOrderXYZ
+        # dem export
+        self.raster_export_dem_transform = RasterTransformNone
+        self.no_export_data = -32767
+        # matches export
+        self.matches_export_format = MatchesFormatBINGO
+        self.matches_export_precision = 3
+        # model export
+        self.model_export_binary = True
+        self.model_texture_format = ImageFormatJPEG
+        self.model_export_texture = True
+        self.model_export_normals = True
+        self.model_export_colors = True
+        self.model_export_cameras = True
+        self.model_export_markers = True
+        self.model_export_udim = False
+        # Orthomosaic and OrthoPhotos export
+        self.raster_export_orthomosaic_transform = RasterTransformNone
+        self.orthomosaic_export_write_kml = False
+        self.orthomosaic_export_write_world = False
+        self.orthomosaic_export_write_scheme = False
+        self.orthomosaic_export_write_alpha = True
+        self.orthomosaic_export_tiff_compression = TiffCompressionLZW
+        self.orthomosaic_export_tiff_big = False
+        self.orthomosaic_export_jpeg_quality = 90
+        self.orthomosaic_export_white_background = True
+        self.raster_export_orthoPhotos_transform = self.raster_export_orthomosaic_transform
+        self.orthoPhotos_export_write_kml = self.orthomosaic_export_write_kml
+        self.orthoPhotos_export_write_world = self.orthomosaic_export_write_world
+        self.orthoPhotos_export_write_scheme = self.orthomosaic_export_write_scheme
+        self.orthoPhotos_export_write_alpha = self.orthomosaic_export_write_alpha
+        self.orthoPhotos_export_tiff_compression = self.orthomosaic_export_tiff_compression
+        self.orthoPhotos_export_tiff_big = self.orthomosaic_export_tiff_big
+        self.orthoPhotos_export_jpeg_quality = self.orthomosaic_export_jpeg_quality
+        self.orthoPhotos_export_white_background = self.orthomosaic_export_white_background
+        # points export
+        self.points_export_binary = True
+        self.points_export_precision = 6
+        self.points_export_normals = True
+        self.points_export_colors = True
+        # shape items export
+        self.export_shapes_items = Shape.Type.Polygon
+        # tiled model
+        self.tiled_model_export_format = TiledModelFormatTLS
+        self.tiled_model_export_mesh_format = ModelFormatCOLLADA
