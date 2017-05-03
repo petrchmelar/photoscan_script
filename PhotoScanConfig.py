@@ -1,12 +1,26 @@
 from PhotoScan import *
 import os
-
+import sys
+import logging
 from configparser import ConfigParser, NoOptionError
 
+# logger initialization
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# file handler
+file_handler = logging.FileHandler('{}/script.log'.format(os.path.dirname(os.path.abspath(__file__))),
+'w')
+file_handler.setFormatter(formatter)
+# stdout handler
+stdout_handler = logging.StreamHandler(sys.stdout)
+
+stdout_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.addHandler(stdout_handler)
 
 class Configuration:
     def __init__(self, config_file_path=None):
-
         # default configuration
         # GENERAL section (this values  need to be loaded from the config file...)
         self.project_name = ""
@@ -116,12 +130,12 @@ class Configuration:
                 tiled_model_export_format = TiledModelFormatZIP
             else:
                 tiled_model_export_format = TiledModelFormatTLS
-                print("Tiled model format (tiled_model_format) option format error. Default setting will be used (TiledModelFormatTLS).")
+                logger.warning("Tiled model format (tiled_model_format) option format error. Default setting will be used (TiledModelFormatTLS).")
         except NoOptionError:
             tiled_model_export_format = TiledModelFormatTLS
-            print(
+            logger.warning(
                 "Tiled model format (tiled_model_format) option doesn't found in config file. Default setting will be used (TiledModelFormatTLS).")
-        print("Tiled model format loaded: {}".format(str(tiled_model_export_format)))
+        logger.info("Tiled model format loaded: {}".format(str(tiled_model_export_format)))
 
         try:
             tiled_model_mesh_format = cfg_parser.get('export', 'tiled_model_mesh_format')
@@ -155,12 +169,12 @@ class Configuration:
                 tiled_model_export_mesh_format = ModelFormatTLS
             else:
                 tiled_model_export_mesh_format = ModelFormatCOLLADA
-                print("Tiled model mesh format (tiled_model_mesh_format) option format error. Default setting will be used (ModelFormatCOLLADA).")
+                logger.warning("Tiled model mesh format (tiled_model_mesh_format) option format error. Default setting will be used (ModelFormatCOLLADA).")
         except NoOptionError:
             tiled_model_export_mesh_format = ModelFormatCOLLADA
-            print(
+            logger.warning(
                 "Tiled model mesh format (tiled_model_mesh_format) option doesn't found in config file. Default setting will be used (ModelFormatCOLLADA).")
-        print("Tiled model mesh format  loaded: {}".format(str(tiled_model_export_mesh_format)))
+        logger.info("Tiled model mesh format  loaded: {}".format(str(tiled_model_export_mesh_format)))
 
         # tiled model
         self.tiled_model_export_format = tiled_model_export_format
@@ -179,12 +193,12 @@ class Configuration:
                 export_shapes_items = Shape.Type.Polygon
             else:
                 export_shapes_items = Shape.Type.Polygon
-                print("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
+                logger.warning("Shape items (shapes_items) export option format error. Default setting will be used (Polygon).")
         except NoOptionError:
             export_shapes_items = Shape.Type.Polygon
-            print(
+            logger.warning(
                 "Shape items (shapes_items) export option doesn't found in config file. Default setting will be used (Polygon).")
-        print("Shape items loaded: {}".format(str(export_shapes_items)))
+        logger.info("Shape items loaded: {}".format(str(export_shapes_items)))
 
         # shape items
         self.export_shapes_items = export_shapes_items
@@ -200,19 +214,19 @@ class Configuration:
                 points_export_binary = False
             else:
                 points_export_binary = True
-                print(
+                logger.warning(
                     "Points export binary (points_binary) option format error. Default setting will be used (True).")
         except NoOptionError:
             points_export_binary = False
-            print("Points export binary (points_binary) option doesn't found in config file. Default setting will be used (True).")
-        print("Points export binary loaded: {}".format(str(points_export_binary)))
+            logger.warning("Points export binary (points_binary) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Points export binary loaded: {}".format(str(points_export_binary)))
 
         try:
             points_export_precision = int(cfg_parser.get('export', 'points_precision'))
         except NoOptionError:
             points_export_precision = 6
-            print("Points export precision (points_precision) option doesn't found in config file. Default setting will be used (6).")
-        print("Points export precision (points_precision) loaded: {}".format(str(points_export_precision)))
+            logger.warning("Points export precision (points_precision) option doesn't found in config file. Default setting will be used (6).")
+        logger.info("Points export precision (points_precision) loaded: {}".format(str(points_export_precision)))
 
         try:
             points_normals = cfg_parser.get('export', 'points_normals')
@@ -222,12 +236,12 @@ class Configuration:
                 points_export_normals = False
             else:
                 points_export_normals = True
-                print(
+                logger.warning(
                     "Points export normals (points_binary) option format error. Default setting will be used (True).")
         except NoOptionError:
             points_export_normals = False
-            print("Points export normals (points_binary) option doesn't found in config file. Default setting will be used (True).")
-        print("Points export normals loaded: {}".format(str(points_export_normals)))
+            logger.warning("Points export normals (points_binary) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Points export normals loaded: {}".format(str(points_export_normals)))
 
         try:
             points_colors = cfg_parser.get('export', 'points_colors')
@@ -237,12 +251,12 @@ class Configuration:
                 points_export_colors = False
             else:
                 points_export_colors = True
-                print(
+                logger.warning(
                     "Points export colors (points_export_colors) option format error. Default setting will be used (True).")
         except NoOptionError:
             points_export_colors = False
-            print("Points export colors (points_export_colors) option doesn't found in config file. Default setting will be used (True).")
-        print("Points export colors loaded: {}".format(str(points_export_colors)))
+            logger.warning("Points export colors (points_export_colors) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Points export colors loaded: {}".format(str(points_export_colors)))
 
         # points export
         self.points_export_binary = points_export_binary
@@ -263,12 +277,12 @@ class Configuration:
                 raster_export_orthomosaic_transform = RasterTransformPalette
             else:
                 raster_export_orthomosaic_transform = RasterTransformNone
-                print("Raster transformation of orthomosaic and orthoPhoto export option format error. Default setting will be used (RasterTransformNone).")
+                logger.warning("Raster transformation of orthomosaic and orthoPhoto export option format error. Default setting will be used (RasterTransformNone).")
         except NoOptionError:
             raster_export_orthomosaic_transform = RasterTransformNone
-            print(
+            logger.warning(
                 "Raster transformation of orthomosaic and orthoPhoto export option doesn't found in config file. Default setting will be used (RasterTransformNone).")
-        print("Raster transformation of orthomosaic and orthoPhoto export loaded: {}".format(str(raster_export_orthomosaic_transform)))
+        logger.info("Raster transformation of orthomosaic and orthoPhoto export loaded: {}".format(str(raster_export_orthomosaic_transform)))
 
         try:
             orthomosaic_write_kml = cfg_parser.get('export', 'export_write_kml')
@@ -278,12 +292,12 @@ class Configuration:
                 orthomosaic_export_write_kml = False
             else:
                 orthomosaic_export_write_kml = False
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export write kml option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_kml = True
-            print("Orthomosaic and orthoPhoto export write kml (export_write_kml) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic and orthoPhoto export write kml loaded: {}".format(str(orthomosaic_export_write_kml)))
+            logger.warning("Orthomosaic and orthoPhoto export write kml (export_write_kml) option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Orthomosaic and orthoPhoto export write kml loaded: {}".format(str(orthomosaic_export_write_kml)))
 
         try:
             write_world = cfg_parser.get('export', 'export_write_world')
@@ -293,12 +307,12 @@ class Configuration:
                 orthomosaic_export_write_world = False
             else:
                 orthomosaic_export_write_world = False
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export write world format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_world = True
-            print("Orthomosaic and orthoPhoto export write world (export_write_world) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic and orthoPhoto export write world loaded: {}".format(str(orthomosaic_export_write_world)))
+            logger.warning("Orthomosaic and orthoPhoto export write world (export_write_world) option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Orthomosaic and orthoPhoto export write world loaded: {}".format(str(orthomosaic_export_write_world)))
 
         try:
             write_scheme = cfg_parser.get('export', 'export_write_scheme')
@@ -308,12 +322,12 @@ class Configuration:
                 orthomosaic_export_write_scheme = False
             else:
                 orthomosaic_export_write_scheme = False
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export write scheme option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_write_scheme = False
-            print("Orthomosaic and orthoPhoto export write scheme (export_write_scheme) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic and orthoPhoto export write scheme loaded: {}".format(str(orthomosaic_export_write_scheme)))
+            logger.warning("Orthomosaic and orthoPhoto export write scheme (export_write_scheme) option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Orthomosaic and orthoPhoto export write scheme loaded: {}".format(str(orthomosaic_export_write_scheme)))
 
         try:
             write_alpha = cfg_parser.get('export', 'export_write_alpha')
@@ -323,12 +337,12 @@ class Configuration:
                 orthomosaic_export_write_alpha = False
             else:
                 orthomosaic_export_write_alpha = True
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export write alpha option format error. Default setting will be used (True).")
         except NoOptionError:
             orthomosaic_export_write_alpha = True
-            print("Orthomosaic and orthoPhoto export write alpha (export_write_alpha) option doesn't found in config file. Default setting will be used (True).")
-        print("Orthomosaic and orthoPhoto export write alpha loaded: {}".format(str(orthomosaic_export_write_alpha)))
+            logger.warning("Orthomosaic and orthoPhoto export write alpha (export_write_alpha) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Orthomosaic and orthoPhoto export write alpha loaded: {}".format(str(orthomosaic_export_write_alpha)))
 
         try:
             tiff_compression = cfg_parser.get('export', 'export_tiff_compression')
@@ -344,12 +358,12 @@ class Configuration:
                 orthomosaic_export_tiff_compression = TiffCompressionDeflate
             else:
                 orthomosaic_export_tiff_compression = TiffCompressionLZW
-                print("Orthomosaic and orthoPhoto tiff compression option format error. Default setting will be used (TiffCompressionLZW).")
+                logger.warning("Orthomosaic and orthoPhoto tiff compression option format error. Default setting will be used (TiffCompressionLZW).")
         except NoOptionError:
             orthomosaic_export_tiff_compression = TiffCompressionLZW
-            print(
+            logger.warning(
                 "Orthomosaic and orthoPhoto tiff compression (orthomosaic_tiff_compression) option doesn't found in config file. Default setting will be used (TiffCompressionLZW).")
-        print("Orthomosaic and orthoPhoto tiff compression loaded: {}".format(str(orthomosaic_export_tiff_compression)))
+        logger.info("Orthomosaic and orthoPhoto tiff compression loaded: {}".format(str(orthomosaic_export_tiff_compression)))
 
         try:
             tiff_big = cfg_parser.get('export', 'export_tiff_big')
@@ -359,19 +373,19 @@ class Configuration:
                 orthomosaic_export_tiff_big = False
             else:
                 orthomosaic_export_tiff_big = False
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export tiff big option format error. Default setting will be used (False).")
         except NoOptionError:
             orthomosaic_export_tiff_big = False
-            print("Orthomosaic and orthoPhoto export tiff big (export_tiff_big) option doesn't found in config file. Default setting will be used (False).")
-        print("Orthomosaic and orthoPhoto export tiff big loaded: {}".format(str(orthomosaic_export_tiff_big)))
+            logger.warning("Orthomosaic and orthoPhoto export tiff big (export_tiff_big) option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Orthomosaic and orthoPhoto export tiff big loaded: {}".format(str(orthomosaic_export_tiff_big)))
 
         try:
             orthomosaic_export_jpeg_quality = int(cfg_parser.get('export', 'export_jpeg_quality'))
         except NoOptionError:
             orthomosaic_export_jpeg_quality = 90
-            print("Orthomosaic and orthoPhoto export jpeg quality (export_jpeg_quality) option doesn't found in config file. Default setting will be used (90).")
-        print("Orthomosaic and orthoPhoto export jpeg quality loaded: {}".format(str(orthomosaic_export_jpeg_quality)))
+            logger.warning("Orthomosaic and orthoPhoto export jpeg quality (export_jpeg_quality) option doesn't found in config file. Default setting will be used (90).")
+        logger.info("Orthomosaic and orthoPhoto export jpeg quality loaded: {}".format(str(orthomosaic_export_jpeg_quality)))
 
         try:
             white_background = cfg_parser.get('export', 'export_white_background')
@@ -381,12 +395,12 @@ class Configuration:
                 orthomosaic_export_white_background = False
             else:
                 orthomosaic_export_white_background = True
-                print(
+                logger.warning(
                     "Orthomosaic and orthoPhoto export white background option format error. Default setting will be used (True).")
         except NoOptionError:
             orthomosaic_export_white_background = True
-            print("Orthomosaic and orthoPhoto export white background (export_white_background) option doesn't found in config file. Default setting will be used (True).")
-        print("Orthomosaic and orthoPhoto export white background loaded: {}".format(str(orthomosaic_export_white_background)))
+            logger.warning("Orthomosaic and orthoPhoto export white background (export_white_background) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Orthomosaic and orthoPhoto export white background loaded: {}".format(str(orthomosaic_export_white_background)))
 
         # Orthomosaic and OrthoPhotos export
         self.raster_export_orthomosaic_transform = raster_export_orthomosaic_transform
@@ -421,19 +435,19 @@ class Configuration:
                 model_export_binary = False
             else:
                 model_export_binary = True
-                print(
+                logger.warning(
                     "Model export binary option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_binary = True
-            print("Model export binary (model_binary) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export binary loaded: {}".format(str(model_export_binary)))
+            logger.warning("Model export binary (model_binary) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export binary loaded: {}".format(str(model_export_binary)))
 
         try:
             model_export_precision = int(cfg_parser.get('export', 'model_precision'))
         except NoOptionError:
             model_export_precision = 6
-            print("Model export precision (model_precision) option doesn't found in config file. Default setting will be used (6).")
-        print("Model export precision loaded: {}".format(str(model_export_precision)))
+            logger.warning("Model export precision (model_precision) option doesn't found in config file. Default setting will be used (6).")
+        logger.info("Model export precision loaded: {}".format(str(model_export_precision)))
 
         try:
             texture_format = cfg_parser.get('export', 'model_texture_format')
@@ -461,12 +475,12 @@ class Configuration:
                 model_texture_format = ImageFormatTGA
             else:
                 model_texture_format = ImageFormatJPEG
-                print("Model texture format option format error. Default setting will be used (ImageFormatJPEG).")
+                logger.warning("Model texture format option format error. Default setting will be used (ImageFormatJPEG).")
         except NoOptionError:
             model_texture_format = ImageFormatJPEG
-            print(
+            logger.warning(
                 "Model texture format option doesn't found in config file. Default setting will be used (ImageFormatJPEG).")
-        print("Model texture format loaded: {}".format(str(model_texture_format)))
+        logger.info("Model texture format loaded: {}".format(str(model_texture_format)))
 
         try:
             model_texture = cfg_parser.get('export', 'model_texture')
@@ -476,12 +490,12 @@ class Configuration:
                 model_export_texture = False
             else:
                 model_export_texture = True
-                print(
+                logger.warning(
                     "Model export texture option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_texture = True
-            print("Model export texture (model_texture) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export texture loaded: {}".format(str(model_export_texture)))
+            logger.warning("Model export texture (model_texture) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export texture loaded: {}".format(str(model_export_texture)))
 
         try:
             model_normals = cfg_parser.get('export', 'model_normals')
@@ -491,12 +505,12 @@ class Configuration:
                 model_export_normals = False
             else:
                 model_export_normals = True
-                print(
+                logger.warning(
                     "Model export normals option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_normals = True
-            print("Model export normals (model_normals) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export normals loaded: {}".format(str(model_export_normals)))
+            logger.warning("Model export normals (model_normals) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export normals loaded: {}".format(str(model_export_normals)))
 
         try:
             model_colors = cfg_parser.get('export', 'model_colors')
@@ -506,12 +520,12 @@ class Configuration:
                 model_export_colors = False
             else:
                 model_export_colors = True
-                print(
+                logger.warning(
                     "Model export colors option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_colors = True
-            print("Model export colors (model_colors) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export colors loaded: {}".format(str(model_export_colors)))
+            logger.warning("Model export colors (model_colors) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export colors loaded: {}".format(str(model_export_colors)))
 
         try:
             model_cameras = cfg_parser.get('export', 'model_cameras')
@@ -521,12 +535,12 @@ class Configuration:
                 model_export_cameras = False
             else:
                 model_export_cameras = True
-                print(
+                logger.warning(
                     "Model export cameras option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_cameras = True
-            print("Model export cameras (model_cameras) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export cameras loaded: {}".format(str(model_export_cameras)))
+            logger.warning("Model export cameras (model_cameras) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export cameras loaded: {}".format(str(model_export_cameras)))
 
         try:
             model_markers = cfg_parser.get('export', 'model_markers')
@@ -536,12 +550,12 @@ class Configuration:
                 model_export_markers = False
             else:
                 model_export_markers = True
-                print(
+                logger.warning(
                     "Model export markers option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_markers = True
-            print("Model export markers (model_markers) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export markers loaded: {}".format(str(model_export_markers)))
+            logger.warning("Model export markers (model_markers) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export markers loaded: {}".format(str(model_export_markers)))
 
         try:
             model_udim = cfg_parser.get('export', 'model_udim')
@@ -551,12 +565,12 @@ class Configuration:
                 model_export_udim = False
             else:
                 model_export_udim = True
-                print(
+                logger.warning(
                     "Model export udim option format error. Default setting will be used (True).")
         except NoOptionError:
             model_export_udim = True
-            print("Model export udim (model_udim) option doesn't found in config file. Default setting will be used (True).")
-        print("Model export markers loaded: {}".format(str(model_export_udim)))
+            logger.warning("Model export udim (model_udim) option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Model export markers loaded: {}".format(str(model_export_udim)))
 
         # model export
         self.model_export_binary = model_export_binary
@@ -581,15 +595,15 @@ class Configuration:
                 matches_export_format = MatchesFormatPATB
             else:
                 matches_export_format = MatchesFormatBINGO
-                print("Matches export format option format error. Default setting will be used (MatchesFormatBINGO).")
+                logger.warning("Matches export format option format error. Default setting will be used (MatchesFormatBINGO).")
         except NoOptionError:
             matches_export_format = MatchesFormatBINGO
-            print(
+            logger.warning(
                 "Matches export format option doesn't found in config file. Default setting will be used (MatchesFormatBINGO).")
-        print("Matches export format loaded: {}".format(str(matches_export_format)))
+        logger.info("Matches export format loaded: {}".format(str(matches_export_format)))
 
         matches_export_precision = int(cfg_parser.get('export', 'matches_precision'))
-        print("Matches export precision loaded: {}".format(str(matches_export_precision)))
+        logger.info("Matches export precision loaded: {}".format(str(matches_export_precision)))
 
         # matches export
         self.matches_export_format = matches_export_format
@@ -608,16 +622,16 @@ class Configuration:
                 raster_export_dem_transform = RasterTransformPalette
             else:
                 raster_export_dem_transform = RasterTransformNone
-                print("Raster transformation of dem export option format error. Default setting will be used (RasterTransformNone).")
+                logger.warning("Raster transformation of dem export option format error. Default setting will be used (RasterTransformNone).")
         except NoOptionError:
             raster_export_dem_transform = RasterTransformNone
-            print(
+            logger.warning(
                 "Raster transformation of dem export order option doesn't found in config file. Default setting will be used (RasterTransformNone).")
-        print("Raster transformation of dem export loaded: {}".format(str(raster_export_dem_transform)))
+        logger.info("Raster transformation of dem export loaded: {}".format(str(raster_export_dem_transform)))
 
         # export dem no data
         no_export_data = int(cfg_parser.get('export', 'no_data'))
-        print("Raster no data option loaded: {}".format(str(no_export_data)))
+        logger.info("Raster no data option loaded: {}".format(str(no_export_data)))
         # dem export
         self.raster_export_dem_transform = raster_export_dem_transform
         self.no_export_data = no_export_data
@@ -651,12 +665,12 @@ class Configuration:
                 cameras_export_format = CamerasFormatVisionMap
             else:
                 cameras_export_format = CamerasFormatXML
-                print("Cameras export option format error. Default setting will be used (CamerasFormatXML).")
+                logger.warning("Cameras export option format error. Default setting will be used (CamerasFormatXML).")
         except NoOptionError:
             cameras_export_format = CamerasFormatXML
-            print(
+            logger.warning(
                 "Cameras export format option doesn't found in config file. Default setting will be used (CamerasFormatXML).")
-        print("Cameras export format loaded: {}".format(str(cameras_export_format)))
+        logger.info("Cameras export format loaded: {}".format(str(cameras_export_format)))
 
         #cameras rotation
         try:
@@ -675,66 +689,74 @@ class Configuration:
                 cameras_rotation_order = RotationOrderZYX
             else:
                 cameras_rotation_order = RotationOrderXYZ
-                print("Cameras rotation order option format error. Default setting will be used (RotationOrderXYZ).")
+                logger.warning("Cameras rotation order option format error. Default setting will be used (RotationOrderXYZ).")
         except NoOptionError:
             cameras_rotation_order = RotationOrderXYZ
-            print(
+            logger.warning(
                 "Cameras rotation order option doesn't found in config file. Default setting will be used (RotationOrderXYZ).")
-        print("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
+        logger.info("Cameras rotation order loaded: {}".format(str(cameras_rotation_order)))
 
         # cameras export
         self.cameras_export_format = cameras_export_format
         self.cameras_rotation_order = cameras_rotation_order
 
     def ConfigureGeneral(self):
-        pass
+        raise NotImplementedError
 
     def ConfigureAlignment(self):
-        pass
+        raise NotImplementedError
 
     def ConfigureDenseCloud(self):
-        pass
+        raise NotImplementedError
 
     def LoadConfigFile(self, config_file_path):
         # load config file section
         # GENERAL section
         cfg_parser = ConfigParser()
         cfg_parser.read(config_file_path)
-        print("Loading config file...")
+        logger.info("Loading config file...")
         project_name = cfg_parser.get('general', 'project_name')
-        print("Project name configuration successfully loaded: {}".format(project_name))
+        logger.info("Project name configuration successfully loaded: {}".format(project_name))
 
         working_directory = cfg_parser.get('general', 'working_directory')
         if not os.path.exists(working_directory):
-            raise IOError("Path {} does not exist".format(working_directory))
-        print("Working directory configuration successfully loaded: {}".format(working_directory))
+            message = "Path {} does not exist".format(working_directory)
+            logger.error(message)
+            raise IOError(message)
+        logger.info("Working directory configuration successfully loaded: {}".format(working_directory))
 
         project_directory = os.path.join(working_directory, cfg_parser.get('general', 'project_directory'))
         if not os.path.exists(project_directory):
-            print("Project directory {} doesn't exist. Creating new one...".format(project_directory))
+            logger.warning("Project directory {} doesn't exist. Creating new one...".format(project_directory))
             os.mkdir(project_directory)
-        print("Project directory configuration successfully loaded: {}".format(project_directory))
+        logger.info("Project directory configuration successfully loaded: {}".format(project_directory))
 
         exports_directory = os.path.join(working_directory, cfg_parser.get('general', 'exports_directory'))
         if not os.path.exists(exports_directory):
-            print("Exports directory {} doesn't exist. Creating new one...".format(exports_directory))
+            logger.warning("Exports directory {} doesn't exist. Creating new one...".format(exports_directory))
             os.mkdir(exports_directory)
-        print("exports_directory directory configuration successfully loaded: {}".format(exports_directory))
+        logger.info("exports_directory directory configuration successfully loaded: {}".format(exports_directory))
 
         log_path = os.path.join(working_directory, cfg_parser.get('general', 'log_path'))
         if not os.path.exists(log_path):
-            raise IOError("Path {} does not exist".format(log_path))
-        print("Logs path configuration successfully loaded: {}".format(log_path))
+            message = "Path {} does not exist".format(log_path)
+            logger.error(message)
+            raise IOError(message)
+        logger.info("Logs path configuration successfully loaded: {}".format(log_path))
 
         images_directory = os.path.join(working_directory, cfg_parser.get('general', 'images_directory'))
         if not os.path.exists(images_directory):
-            raise IOError("Path {} does not exist".format(images_directory))
-        print("Photos directory configuration successfully loaded: {}".format(images_directory))
+            message = "Path {} does not exist".format(images_directory)
+            logger.error(message)
+            raise IOError(message)
+        logger.info("Photos directory configuration successfully loaded: {}".format(images_directory))
 
         mask_path = os.path.join(working_directory, cfg_parser.get('general', 'mask_path'))
         if not os.path.exists(mask_path):
-            raise IOError("Path {} does not exist".format(mask_path))
-        print("Mask path configuration successfully loaded: {}".format(mask_path))
+            message = "Path {} does not exist".format(mask_path)
+            logger.error(message)
+            raise IOError(message)
+        logger.info("Mask path configuration successfully loaded: {}".format(mask_path))
 
 
         # photos alignment section
@@ -752,11 +774,11 @@ class Configuration:
                 photos_alignment_accuracy = HighestAccuracy
             else:
                 photos_alignment_accuracy = MediumAccuracy
-                print("Photos alignment accuracy option bad format. Default setting will be used (MediumAccuracy).")
+                logger.warning("Photos alignment accuracy option bad format. Default setting will be used (MediumAccuracy).")
         except NoOptionError:
             photos_alignment_accuracy = MediumAccuracy
-            print("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
-        print("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
+            logger.warning("Photos alignment accuracy option doesn't found in config file. Default setting will be used (MediumAccuracy).")
+        logger.info("Photos alignment accuracy loaded: {}".format(str(photos_alignment_accuracy)))
 
         try:
             preselection = cfg_parser.get('photos_alignment', 'preselection')
@@ -768,12 +790,12 @@ class Configuration:
                 photos_alignment_preselection = ReferencePreselection
             else:
                 photos_alignment_preselection = NoPreselection
-                print(
+                logger.warning(
                     "Photos alignment preselection option bad format. Default setting will be used (NoPreselection).")
         except NoOptionError:
             photos_alignment_preselection = NoPreselection
-            print("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
-        print("Photos alignment preselection loaded: {}".format(str(photos_alignment_preselection)))
+            logger.warning("Photos alignment preselection option doesn't found in config file. Default setting will be used (NoPreselection).")
+        logger.info("Photos alignment preselection loaded: {}".format(str(photos_alignment_preselection)))
 
         try:
             generic_preselection = cfg_parser.get('photos_alignment', 'generic_preselection')
@@ -783,32 +805,33 @@ class Configuration:
                 photos_alignment_generic_preselection = False
             else:
                 photos_alignment_generic_preselection = True
-                print(
+                logger.warning(
                     "Photos alignment generic_preselection option bad format. Default setting will be used (True).")
         except NoOptionError:
             photos_alignment_generic_preselection = True
-            print("Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
+            logger.warning("Photos alignment generic_preselection option doesn't found in config file. Default setting will be used (True).")
 
-        print("Photos alignment generic_preselection loaded: {}".format(str(photos_alignment_generic_preselection)))
+        logger.info("Photos alignment generic_preselection loaded: {}".format(str(photos_alignment_generic_preselection)))
 
         try:
             photos_alignment_key_point_limit = int(cfg_parser.get('photos_alignment', 'key_point_limit'))
         except NoOptionError:
             photos_alignment_key_point_limit = 40000
-            print("Photos alignment key_point_limit option doesn't found in config file. Default setting will be used (40000).")
+            logger.warning("Photos alignment key_point_limit option doesn't found in config file. Default setting will be used (40000).")
         except ValueError:
             photos_alignment_key_point_limit = 40000
-            print("Photos alignment key_point_limit bad format. Default setting will be used (40000).")
-        print("Photos alignment key_point_limit loaded: {}".format(str(photos_alignment_key_point_limit)))
+            logger.warning("Photos alignment key_point_limit bad format. Default setting will be used (40000).")
+        logger.info("Photos alignment key_point_limit loaded: {}".format(str(photos_alignment_key_point_limit)))
 
         try:
             photos_alignment_tie_point_limit = int(cfg_parser.get('photos_alignment', 'tie_point_limit'))
         except NoOptionError:
             photos_alignment_tie_point_limit = 4000
-            print("Photos alignment tie_point_limit option doesn't found in config file. Default setting will be used (4000).")
+            logger.warning("Photos alignment tie_point_limit option doesn't found in config file. Default setting will be used (4000).")
         except ValueError:
             photos_alignment_tie_point_limit = 4000
-        print("Photos alignment tie_point_limit loaded: {}".format(str(photos_alignment_tie_point_limit)))
+            logger.warning("Photos alignment tie_point_limit option bad format. Default setting will be used (4000).")
+        logger.info("Photos alignment tie_point_limit loaded: {}".format(str(photos_alignment_tie_point_limit)))
 
         # dense cloud section
         try:
@@ -825,11 +848,11 @@ class Configuration:
                 dense_cloud_quality = UltraHighQuality
             else:
                 dense_cloud_quality = MediumQuality
-                print("Dense cloud quality option format error. Default setting will be used (Medium).")
+                logger.warning("Dense cloud quality option format error. Default setting will be used (Medium).")
         except NoOptionError:
             dense_cloud_quality = MediumQuality
-            print("Dense cloud quality option doesn't found in config file. Default setting will be used (Medium).")
-        print("Dense cloud quality loaded: {}".format(str(dense_cloud_quality)))
+            logger.warning("Dense cloud quality option doesn't found in config file. Default setting will be used (Medium).")
+        logger.info("Dense cloud quality loaded: {}".format(str(dense_cloud_quality)))
 
         try:
             filter = cfg_parser.get('dense_cloud', 'depth_filtering')
@@ -843,11 +866,11 @@ class Configuration:
                 dense_cloud_filtering = AggressiveFiltering
             else:
                 dense_cloud_filtering = AggressiveFiltering
-                print("Dense cloud filtering option format error. Default setting will be used (Aggressive).")
+                logger.warning("Dense cloud filtering option format error. Default setting will be used (Aggressive).")
         except NoOptionError:
             dense_cloud_filtering = AggressiveFiltering
-            print("Dense cloud filtering option doesn't found in config file. Default setting will be used (Aggressive).")
-        print("Dense cloud depth_filtering loaded: {}".format(str(dense_cloud_filtering)))
+            logger.warning("Dense cloud filtering option doesn't found in config file. Default setting will be used (Aggressive).")
+        logger.info("Dense cloud depth_filtering loaded: {}".format(str(dense_cloud_filtering)))
 
         try:
             keep_depth = cfg_parser.get('dense_cloud', 'keep_depth')
@@ -857,12 +880,12 @@ class Configuration:
                 dense_cloud_keep_depth = False
             else:
                 dense_cloud_keep_depth = False
-                print(
+                logger.warning(
                     "Dense cloud keep_dept option bad format. Default setting will be used (False).")
         except NoOptionError:
             dense_cloud_keep_depth = False
-            print("Dense cloud keep_dept option doesn't found in config file. Default setting will be used (False).")
-        print("Dense cloud keep_depth loaded: {}".format(str(dense_cloud_keep_depth)))
+            logger.warning("Dense cloud keep_dept option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Dense cloud keep_depth loaded: {}".format(str(dense_cloud_keep_depth)))
 
         try:
             reuse_depth = cfg_parser.get('dense_cloud', 'reuse_depth')
@@ -872,12 +895,12 @@ class Configuration:
                 dense_cloud_reuse_depth = False
             else:
                 dense_cloud_reuse_depth = False
-                print(
+                logger.warning(
                     "Dense cloud reuse_depth option bad format. Default setting will be used (False).")
         except NoOptionError:
             dense_cloud_reuse_depth = False
-            print("Dense cloud reuse_depth option doesn't found in config file. Default setting will be used (False).")
-        print("Dense cloud reuse_depth loaded: {}".format(str(dense_cloud_reuse_depth)))
+            logger.warning("Dense cloud reuse_depth option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Dense cloud reuse_depth loaded: {}".format(str(dense_cloud_reuse_depth)))
 
         # mesh section
         try:
@@ -888,11 +911,11 @@ class Configuration:
                 mesh_surface = HeightFiled
             else:
                 mesh_surface = Arbitrary
-                print("Mesh surface option format error. Default setting will be used (Arbitrary).")
+                logger.warning("Mesh surface option format error. Default setting will be used (Arbitrary).")
         except NoOptionError:
             mesh_surface = Arbitrary
-            print("Mesh surface option doesn't found in config file. Default setting will be used (Arbitrary).")
-        print("Mesh surface loaded: {}".format(str(mesh_surface)))
+            logger.warning("Mesh surface option doesn't found in config file. Default setting will be used (Arbitrary).")
+        logger.info("Mesh surface loaded: {}".format(str(mesh_surface)))
 
         try:
             interpolation = cfg_parser.get('mesh', 'interpolation')
@@ -904,11 +927,11 @@ class Configuration:
                 mesh_interpolation = Extrapolated
             else:
                 mesh_interpolation = EnabledInterpolation
-                print("Mesh interpolation option format error. Default setting will be used (EnabledInterpolation).")
+                logger.warning("Mesh interpolation option format error. Default setting will be used (EnabledInterpolation).")
         except NoOptionError:
             mesh_interpolation = EnabledInterpolation
-            print("Mesh interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
-        print("Mesh interpolation loaded: {}".format(str(mesh_interpolation)))
+            logger.warning("Mesh interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
+        logger.info("Mesh interpolation loaded: {}".format(str(mesh_interpolation)))
 
 
         try:
@@ -921,11 +944,11 @@ class Configuration:
                 mesh_face_count = HighFaceCount
             else:
                 mesh_face_count = MediumFaceCount
-                print("Mesh face_count option format error. Default setting will be used (MediumFaceCount).")
+                logger.warning("Mesh face_count option format error. Default setting will be used (MediumFaceCount).")
         except NoOptionError:
             mesh_face_count = EnabledInterpolation
-            print("Mesh face_count option doesn't found in config file. Default setting will be used (MediumFaceCount).")
-        print("Mesh face_count loaded: {}".format(str(mesh_face_count)))
+            logger.warning("Mesh face_count option doesn't found in config file. Default setting will be used (MediumFaceCount).")
+        logger.info("Mesh face_count loaded: {}".format(str(mesh_face_count)))
 
         # texture section
         try:
@@ -942,20 +965,20 @@ class Configuration:
                 texture_mapping = CameraMapping
             else:
                 texture_mapping = GenericMapping
-                print("Texture mapping option format error. Default setting will be used (GenericMapping).")
+                logger.warning("Texture mapping option format error. Default setting will be used (GenericMapping).")
         except NoOptionError:
             mesh_face_count = EnabledInterpolation
-            print("Texture mapping option doesn't found in config file. Default setting will be used (GenericMapping).")
-        print("Texture mapping loaded: {}".format(str(GenericMapping)))
+            logger.warning("Texture mapping option doesn't found in config file. Default setting will be used (GenericMapping).")
+        logger.info("Texture mapping loaded: {}".format(str(GenericMapping)))
 
         try:
             texture_count = int(cfg_parser.get('texture', 'count'))
         except NoOptionError:
             texture_count = 1
-            print("texture count option doesn't found in config file. Default setting will be used (4000).")
+            logger.warning("texture count option doesn't found in config file. Default setting will be used (4000).")
         except ValueError:
             texture_count = 1
-        print("Photos alignment tie_point_limit loaded: {}".format(str(texture_count)))
+        logger.warning("Photos alignment tie_point_limit loaded: {}".format(str(texture_count)))
 
         # build texture section
         try:
@@ -972,11 +995,11 @@ class Configuration:
                 texture_blending = DisabledBlending
             else:
                 texture_blending = MosaicBlending
-                print("Texture blending option format error. Default setting will be used (MosaicBlending).")
+                logger.warning("Texture blending option format error. Default setting will be used (MosaicBlending).")
         except NoOptionError:
             texture_blending = MosaicBlending
-            print("Texture blending option doesn't found in config file. Default setting will be used (MosaicBlending).")
-        print("Texture blending loaded: {}".format(str(texture_blending)))
+            logger.warning("Texture blending option doesn't found in config file. Default setting will be used (MosaicBlending).")
+        logger.info("Texture blending loaded: {}".format(str(texture_blending)))
 
         try:
             color_correction = cfg_parser.get('build_texture', 'color_correction')
@@ -986,21 +1009,22 @@ class Configuration:
                 texture_color_correction = False
             else:
                 texture_color_correction = False
-                print(
+                logger.warning(
                     "Dense cloud color_correction option bad format. Default setting will be used (False).")
         except NoOptionError:
             texture_color_correction = False
-            print("Dense cloud color_correction option doesn't found in config file. Default setting will be used (False).")
-        print("Dense cloud color_correction loaded: {}".format(str(texture_color_correction)))
+            logger.warning("Dense cloud color_correction option doesn't found in config file. Default setting will be used (False).")
+        logger.info("Dense cloud color_correction loaded: {}".format(str(texture_color_correction)))
 
         try:
             texture_size = int(cfg_parser.get('build_texture', 'size'))
         except NoOptionError:
             texture_size = 2048
-            print("texture count option doesn't found in config file. Default setting will be used (4000).")
+            logger.warning("Dense cloud size doesn't found in config file. Default setting will be used (2048).")
         except ValueError:
+            logger.warning("Dense cloud size format error. Default setting will be used (2048).")
             texture_size = 2048
-        print("Photos alignment tie_point_limit loaded: {}".format(str(texture_size)))
+        logger.info("Dense cloud size loaded: {}".format(str(texture_size)))
 
         try:
             fill_holes = cfg_parser.get('build_texture', 'fill_holes')
@@ -1010,12 +1034,12 @@ class Configuration:
                 texture_fill_holes = False
             else:
                 texture_fill_holes = True
-                print(
+                logger.warning(
                     "Dense cloud fill_holes option bad format. Default setting will be used (True).")
         except NoOptionError:
             texture_fill_holes = True
-            print("Dense cloud fill_holes option doesn't found in config file. Default setting will be used (True).")
-        print("Dense cloud fill_holes loaded: {}".format(str(texture_fill_holes)))
+            logger.warning("Dense cloud fill_holes option doesn't found in config file. Default setting will be used (True).")
+        logger.info("Dense cloud fill_holes loaded: {}".format(str(texture_fill_holes)))
 
         # build dem section
         try:
@@ -1036,12 +1060,12 @@ class Configuration:
                 dem_source = OrthomosaicData
             else:
                 dem_source = DenseCloudData
-                print("dem source option format error. Default setting will be used (DenseCloudData).")
+                logger.warning("DEM source option format error. Default setting will be used (DenseCloudData).")
         except NoOptionError:
             dem_source = DenseCloudData
-            print(
-                "dem source option doesn't found in config file. Default setting will be used (DenseCloudData).")
-        print("DEM source loaded: {}".format(str(dem_source)))
+            logger.warning(
+                "DEM source option doesn't found in config file. Default setting will be used (DenseCloudData).")
+        logger.info("DEM source loaded: {}".format(str(dem_source)))
 
         try:
             interpolation = cfg_parser.get('dem', 'interpolation')
@@ -1053,12 +1077,12 @@ class Configuration:
                 dem_interpolation = Extrapolated
             else:
                 dem_interpolation = EnabledInterpolation
-                print("DEM interpolation option format error. Default setting will be used (EnabledInterpolation).")
+                logger.warning("DEM interpolation option format error. Default setting will be used (EnabledInterpolation).")
         except NoOptionError:
             dem_interpolation = EnabledInterpolation
-            print(
+            logger.warning(
                 "DEM interpolation option doesn't found in config file. Default setting will be used (EnabledInterpolation).")
-        print("DEM interpolation loaded: {}".format(str(dem_interpolation)))
+        logger.info("DEM interpolation loaded: {}".format(str(dem_interpolation)))
 
         # GENERAL section (this values should be loaded from the config file...)
         self.project_name = project_name

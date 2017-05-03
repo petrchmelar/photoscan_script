@@ -4,13 +4,13 @@ import argparse
 import glob
 import os
 import sys
-
+import logging
 from PhotoScanConfig import Configuration
 from PhotoScanExporter import PhotoScanExporter
 
 # loger initialization
 # setup logger
-logger = logging.getLogger("photoscan_script")
+logger = logging.getLogger('photoscan_script')
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
