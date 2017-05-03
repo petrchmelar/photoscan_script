@@ -33,7 +33,7 @@ class PhotoScanExporter:
 			raise ValueError(message)
 		else:
 			self.config = config
-			
+
 		# create export directories
 		export_cameras_directory = os.path.join(config.exports_directory, "Cameras")
 		if not os.path.exists(export_cameras_directory):
@@ -108,7 +108,7 @@ class PhotoScanExporter:
  								 format=self.config.cameras_export_format,
 								 rotation_order=self.config.cameras_rotation_order)
 		logger.info("Cameras exported.")
-		
+
 		# export dem
 		self.chunk.exportDem(path=self.export_dem_directory + '/dem.tiff',
 							 raster_transform=self.config.raster_export_dem_transform,
@@ -128,8 +128,8 @@ class PhotoScanExporter:
 								 export_markers=False,
 								 use_labels=False)
 		 """
-		 logger.warning("Matches export not implemented.")
-		 
+		logger.warning("Matches export not implemented.")
+
 		# export model
 		self.chunk.exportModel(path=self.export_model_directory+'/model.obj',
 							   binary=self.config.model_export_binary,
@@ -142,7 +142,7 @@ class PhotoScanExporter:
 							   udim=self.config.model_export_udim,
 							   strip_extensions=False)
 		logger.info("Model exported.")
-		
+
 		# export orthomosaic
 		self.chunk.exportOrthomosaic(path=self.export_orthomosaic_directory+'/orthomosaic.tiff',
 									 raster_transform=self.config.raster_export_orthomosaic_transform,
@@ -154,7 +154,7 @@ class PhotoScanExporter:
 									 jpeg_quality=self.config.orthomosaic_export_jpeg_quality,
 									 white_background=self.config.orthomosaic_export_white_background)
 		logger.info("Orthomosaic exported.")
-		
+
 		# export orthophotos
 		self.chunk.exportOrthophotos(path=self.export_orthophotos_directory+'/orthophotos.tiff',
 									raster_transform=self.config.raster_export_orthoPhotos_transform,
@@ -166,7 +166,7 @@ class PhotoScanExporter:
 									jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
 									white_background=self.config.orthoPhotos_export_white_background)
 		logger.info("Ortophotos exported.")
-		
+
 		# export points
 		self.chunk.exportPoints(path=self.export_points_directory+'/points.obj',
 								binary=self.config.points_export_binary,

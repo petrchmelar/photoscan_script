@@ -125,12 +125,12 @@ chunk.buildTexture(blending=config.texture_blending,
 
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
 doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
-chunk = dock.chunk
+chunk = doc.chunk
 
 chunk.buildTiledModel()
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
 doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
-chunk = dock.chunk
+chunk = doc.chunk
 
 # build dem
 chunk.buildDem(source=config.dem_source,
@@ -138,7 +138,7 @@ chunk.buildDem(source=config.dem_source,
 
 doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
 doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
-chunk = dock.chunk
+chunk = doc.chunk
 
 chunk.buildOrthomosaic()
 
