@@ -24,6 +24,8 @@ class PhotoScanExporter:
 			message = "Chunk does not exist!"
 			logger.error(message)
 			raise ValueError(message)
+		else:
+			self.chunk = chunk
 
 		if config is None:
 			message = "Configuration does not exist!"
@@ -99,81 +101,81 @@ class PhotoScanExporter:
 
 	def exportAll(self):
 		# export cameras
-		chunk.exportCameras(path=self.export_cameras_directory,
-		                    format=self.config.cameras_export_format,
-		                    rotation_order=self.config.cameras_rotation_order)
+		self.chunk.exportCameras(path=self.export_cameras_directory,
+			                     format=self.config.cameras_export_format,
+			                     rotation_order=self.config.cameras_rotation_order)
 
 		# export dem
-		chunk.exportDem(path=self.export_dem_directory,
-		                raster_transform=self.config.raster_export_transform,
-		                nodata=self.config.no_export_data,
-		                write_kml=False,
-		                write_world=False,
-		                write_scheme=False,
-		                tiff_big=False)
+		self.chunk.exportDem(path=self.export_dem_directory,
+			                 raster_transform=self.config.raster_export_transform,
+			                 nodata=self.config.no_export_data,
+			                 write_kml=False,
+			                 write_world=False,
+			                 write_scheme=False,
+			                 tiff_big=False)
 
 		# export markers
-		chunk.exportMarkers(path=self.export_markers_directory)
+		self.chunk.exportMarkers(path=self.export_markers_directory)
 
 		# export matches
-		chunk.exportMatches(path=self.export_matches_directory,
-							format=self.config.matches_export_format,
-							precision=self.config.matches_export_precision,
-							export_points=True,
-							export_markers=False,
-							use_labels=False)
+		self.chunk.exportMatches(path=self.export_matches_directory,
+								 format=self.config.matches_export_format,
+								 precision=self.config.matches_export_precision,
+								 export_points=True,
+								 export_markers=False,
+								 use_labels=False)
 
 		# export model
-		chunk.exportModel(path=self.export_model_directory,
-						  binary=self.config.model_export_binary,
-						  precision=self.config.model_export_precision,
-						  texture_format=self.config.model_texture_format,
-						  texture=self.config.model_export_texture,
-						  normals=self.config.model_export_normals,
-						  colors=self.config.model_export_colors,
-						  cameras=self.config.model_export_cameras,
-						  markers=self.config.model_export_markers,
-						  udim=self.config.model_export_udim,
-						  strip_extensions=False)
+		self.chunk.exportModel(path=self.export_model_directory,
+							   binary=self.config.model_export_binary,
+							   precision=self.config.model_export_precision,
+							   texture_format=self.config.model_texture_format,
+							   texture=self.config.model_export_texture,
+							   normals=self.config.model_export_normals,
+							   colors=self.config.model_export_colors,
+							   cameras=self.config.model_export_cameras,
+							   markers=self.config.model_export_markers,
+							   udim=self.config.model_export_udim,
+							   strip_extensions=False)
 
 		# export orthomosaic
-		chunk.exportOrthomosaic(path=self.export_orthomosaic_directory,
-								raster_transform=self.config.raster_export_orthomosaic_transform,
-								write_kml=self.config.orthomosaic_export_write_kml,
-								write_world=self.config.orthomosaic_export_write_world,
-								write_scheme=self.config.orthomosaic_export_write_scheme,
-								write_alpha=self.config.orthomosaic_export_write_alpha,
-								tiff_compression=self.config.orthomosaic_export_tiff_compression,
-								tiff_big=self.config.orthomosaic_export_tiff_big,
-								jpeg_quality=self.config.orthomosaic_export_jpeg_quality,
-								white_background=self.config.orthomosaic_export_white_background)
+		self.chunk.exportOrthomosaic(path=self.export_orthomosaic_directory,
+									 raster_transform=self.config.raster_export_orthomosaic_transform,
+									 write_kml=self.config.orthomosaic_export_write_kml,
+									 write_world=self.config.orthomosaic_export_write_world,
+									 write_scheme=self.config.orthomosaic_export_write_scheme,
+									 write_alpha=self.config.orthomosaic_export_write_alpha,
+									 tiff_compression=self.config.orthomosaic_export_tiff_compression,
+									 tiff_big=self.config.orthomosaic_export_tiff_big,
+									 jpeg_quality=self.config.orthomosaic_export_jpeg_quality,
+									 white_background=self.config.orthomosaic_export_white_background)
 
 		# export orthophotos
-		chunk.exportOrthophotos(path=self.export_orthophotos_directory,
-						  		raster_transform=self.config.raster_export_orthoPhotos_transform,
-						  		write_kml=self.config.orthoPhotos_export_write_kml,
-						  		write_world=self.config.orthoPhotos_export_write_world,
-						  		write_scheme=self.config.orthoPhotos_export_write_scheme,
-						  		write_alpha=self.config.orthoPhotos_export_write_alpha,
-						  		tiff_compression=self.config.orthoPhotos_export_tiff_compression,
-						  		tiff_big=self.config.orthoPhotos_export_tiff_big,
-						  		jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
-						  		white_background=self.config.orthoPhotos_export_white_background)
+		self.chunk.exportOrthophotos(path=self.export_orthophotos_directory,
+						  			 raster_transform=self.config.raster_export_orthoPhotos_transform,
+							  	 	 write_kml=self.config.orthoPhotos_export_write_kml,
+							  		 write_world=self.config.orthoPhotos_export_write_world,
+							  		 write_scheme=self.config.orthoPhotos_export_write_scheme,
+							  		 write_alpha=self.config.orthoPhotos_export_write_alpha,
+							  		 tiff_compression=self.config.orthoPhotos_export_tiff_compression,
+							  		 tiff_big=self.config.orthoPhotos_export_tiff_big,
+							  		 jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
+							  		 white_background=self.config.orthoPhotos_export_white_background)
 		# export points
-		chunk.exportPoints(path=self.export_points_directory,
-						   binary=self.config.points_export_binary,
-						   precision=self.config.points_export_precision,
-						   normals=self.config.points_export_normals,
-						   colors=self.config.points_export_colors)
+		self.chunk.exportPoints(path=self.export_points_directory,
+							    binary=self.config.points_export_binary,
+							    precision=self.config.points_export_precision,
+							    normals=self.config.points_export_normals,
+							    colors=self.config.points_export_colors)
 
 		# export report
-		chunk.exportReport(path=self.export_report_directory)
+		self.chunk.exportReport(path=self.export_report_directory)
 
 		# export shapes
-		chunk.exportShapes(path=self.export_shapes_directory,
-						   items=self.config.export_shapes_items)
+		self.chunk.exportShapes(path=self.export_shapes_directory,
+						   		items=self.config.export_shapes_items)
 
 		# exoirt tiled model
-		chunk.exportTiledModel(path=self.export_tiledModel_directory,
-							   format=self.config.tiled_model_export_format,
-							   mesh_format=self.config.tiled_model_export_mesh_format)
+		self.chunk.exportTiledModel(path=self.export_tiledModel_directory,
+								    format=self.config.tiled_model_export_format,
+								    mesh_format=self.config.tiled_model_export_mesh_format)
