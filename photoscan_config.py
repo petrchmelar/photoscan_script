@@ -19,7 +19,7 @@ stdout_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(stdout_handler)
 
-class Configuration:
+class PhotoScanConfig:
     def __init__(self, config_file_path=None):
         # default configuration
         # GENERAL section (this values  need to be loaded from the config file...)

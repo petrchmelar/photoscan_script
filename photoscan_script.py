@@ -5,8 +5,8 @@ import glob
 import os
 import sys
 import logging
-from PhotoScanConfig import Configuration
-from PhotoScanExporter import PhotoScanExporter
+from photoscan_config import PhotoScanConfig
+from photoscan_exporter import PhotoScanExporter
 
 # loger initialization
 # setup logger
@@ -44,7 +44,7 @@ else:
     app.messageBox("Invalid config file path: \"{}\"".format(config_file_path))
     logger.error("Invalid config file path: \"{}\"".format(config_file_path))
 
-config = Configuration(config_file_path=config_file_path)
+config = PhotoScanConfig(config_file_path=config_file_path)
 
 # create document and chunk
 doc = Document()
