@@ -7,7 +7,7 @@ from configparser import ConfigParser, NoOptionError
 # logger initialization
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s: %(message)s')
 # file handler
 file_handler = logging.FileHandler('{}/script.log'.format(os.path.dirname(os.path.abspath(__file__))),
 'w')
