@@ -31,6 +31,9 @@ class PhotoScanExporter:
 			message = "Configuration does not exist!"
 			logger.error(message)
 			raise ValueError(message)
+		else:
+			self.config = config
+
 		# create export directories
 		export_cameras_directory = os.path.join(config.exports_directory, "Cameras")
 		if not os.path.exists(export_cameras_directory):
@@ -101,35 +104,36 @@ class PhotoScanExporter:
 
 	def exportAll(self):
 		# export cameras
-		self.chunk.exportCameras(path=self.export_cameras_directory,
-			                     format=self.config.cameras_export_format,
-			                     rotation_order=self.config.cameras_rotation_order)
+		self.chunk.exportCameras(path=self.export_cameras_directory + '/cameras',
+ 								 format=self.config.cameras_export_format,
+								 rotation_order=self.config.cameras_rotation_order)
+		logger.info("Cameras exported.")
 
 		# export dem
-		self.chunk.exportDem(path=self.export_dem_directory,
-			                 raster_transform=self.config.raster_export_transform,
-			                 nodata=self.config.no_export_data,
-			                 write_kml=False,
-			                 write_world=False,
-			                 write_scheme=False,
-			                 tiff_big=False)
-
-		# export markers
-		self.chunk.exportMarkers(path=self.export_markers_directory)
+		self.chunk.exportDem(path=self.export_dem_directory + '/dem.tiff',
+							 raster_transform=self.config.raster_export_dem_transform,
+							 nodata=self.config.no_export_data,
+							 write_kml=False,
+							 write_world=False,
+							 write_scheme=False,
+							 tiff_big=False)
+		logger.info("DEM exported.")
 
 		# export matches
-		self.chunk.exportMatches(path=self.export_matches_directory,
+		"""
+		self.chunk.exportMatches(path=self.export_matches_directory + '/matches.bingo',
 								 format=self.config.matches_export_format,
 								 precision=self.config.matches_export_precision,
 								 export_points=True,
 								 export_markers=False,
 								 use_labels=False)
+		 """
+		 logger.warning("Matches export not implemented.")
 
 		# export model
-		self.chunk.exportModel(path=self.export_model_directory,
+		self.chunk.exportModel(path=self.export_model_directory+'/model.obj',
 							   binary=self.config.model_export_binary,
-							   precision=self.config.model_export_precision,
-							   texture_format=self.config.model_texture_format,
+							   precision=6,
 							   texture=self.config.model_export_texture,
 							   normals=self.config.model_export_normals,
 							   colors=self.config.model_export_colors,
@@ -137,45 +141,51 @@ class PhotoScanExporter:
 							   markers=self.config.model_export_markers,
 							   udim=self.config.model_export_udim,
 							   strip_extensions=False)
+		logger.info("Model exported.")
 
 		# export orthomosaic
-		self.chunk.exportOrthomosaic(path=self.export_orthomosaic_directory,
+		self.chunk.exportOrthomosaic(path=self.export_orthomosaic_directory+'/orthomosaic.tiff',
 									 raster_transform=self.config.raster_export_orthomosaic_transform,
 									 write_kml=self.config.orthomosaic_export_write_kml,
 									 write_world=self.config.orthomosaic_export_write_world,
-									 write_scheme=self.config.orthomosaic_export_write_scheme,
 									 write_alpha=self.config.orthomosaic_export_write_alpha,
 									 tiff_compression=self.config.orthomosaic_export_tiff_compression,
 									 tiff_big=self.config.orthomosaic_export_tiff_big,
 									 jpeg_quality=self.config.orthomosaic_export_jpeg_quality,
 									 white_background=self.config.orthomosaic_export_white_background)
+		logger.info("Orthomosaic exported.")
 
 		# export orthophotos
-		self.chunk.exportOrthophotos(path=self.export_orthophotos_directory,
-						  			 raster_transform=self.config.raster_export_orthoPhotos_transform,
-							  	 	 write_kml=self.config.orthoPhotos_export_write_kml,
-							  		 write_world=self.config.orthoPhotos_export_write_world,
-							  		 write_scheme=self.config.orthoPhotos_export_write_scheme,
-							  		 write_alpha=self.config.orthoPhotos_export_write_alpha,
-							  		 tiff_compression=self.config.orthoPhotos_export_tiff_compression,
-							  		 tiff_big=self.config.orthoPhotos_export_tiff_big,
-							  		 jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
-							  		 white_background=self.config.orthoPhotos_export_white_background)
+		self.chunk.exportOrthophotos(path=self.export_orthophotos_directory+'/orthophotos.tiff',
+									raster_transform=self.config.raster_export_orthoPhotos_transform,
+									write_kml=self.config.orthoPhotos_export_write_kml,
+									write_world=self.config.orthoPhotos_export_write_world,
+									write_alpha=self.config.orthoPhotos_export_write_alpha,
+									tiff_compression=self.config.orthoPhotos_export_tiff_compression,
+									tiff_big=self.config.orthoPhotos_export_tiff_big,
+									jpeg_quality=self.config.orthoPhotos_export_jpeg_quality,
+									white_background=self.config.orthoPhotos_export_white_background)
+		logger.info("Ortophotos exported.")
+
 		# export points
-		self.chunk.exportPoints(path=self.export_points_directory,
-							    binary=self.config.points_export_binary,
-							    precision=self.config.points_export_precision,
-							    normals=self.config.points_export_normals,
-							    colors=self.config.points_export_colors)
+		self.chunk.exportPoints(path=self.export_points_directory+'/points.obj',
+								binary=self.config.points_export_binary,
+								precision=self.config.points_export_precision,
+								normals=self.config.points_export_normals,
+								colors=self.config.points_export_colors)
+		logger.info("Points exported.")
 
 		# export report
-		self.chunk.exportReport(path=self.export_report_directory)
+		self.chunk.exportReport(path=self.export_report_directory+'/report.pdf')
+		logger.info("Report exported.")
 
 		# export shapes
-		self.chunk.exportShapes(path=self.export_shapes_directory,
-						   		items=self.config.export_shapes_items)
+		# self.chunk.exportShapes(path=self.export_shapes_directory+'\shapes.obj',
+		# 						items=self.config.export_shapes_items)
+		logger.warning("Shapes export not implemented.")
 
-		# exoirt tiled model
-		self.chunk.exportTiledModel(path=self.export_tiledModel_directory,
-								    format=self.config.tiled_model_export_format,
-								    mesh_format=self.config.tiled_model_export_mesh_format)
+		# export tiled model
+		self.chunk.exportTiledModel(path=self.export_tiledModel_directory+'/tiled_model.tls',
+									format=self.config.tiled_model_export_format,
+									mesh_format=self.config.tiled_model_export_mesh_format)
+		logger.info("Tiled model exported.")
