@@ -127,9 +127,20 @@ doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx
 doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
 chunk = dock.chunk
 
+chunk.buildTiledModel()
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
+doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
+chunk = dock.chunk
+
 # build dem
 chunk.buildDem(source=config.dem_source,
               interpolation=config.dem_interpolation)
+
+doc.save(path=os.path.join(config.project_directory, config.project_name + '.psx'))
+doc.open(os.path.join(config.project_directory, config.project_name + '.psx'))
+chunk = dock.chunk
+
+chunk.buildOrthomosaic()
 
 try:
   exporter = PhotoScanExporter(config, chunk)
