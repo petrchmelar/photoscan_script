@@ -10,7 +10,7 @@ logger.setLevel(logging.INFO)
 formatter = logging.Formatter('[SCRIPT] %(asctime)s:%(name)s:%(levelname)s: %(message)s')
 # file handler
 file_handler = logging.FileHandler('{}/script.log'.format(os.path.dirname(os.path.abspath(__file__))),
-'w')
+'a')
 file_handler.setFormatter(formatter)
 # stdout handler
 stdout_handler = logging.StreamHandler(sys.stdout)
